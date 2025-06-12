@@ -19,7 +19,7 @@ with open(f"logs/{date_str}.html", "w", encoding="utf-8") as f:
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(f"""
     <html><body>
-    <h1>{date_str} {time_str}</h1>
+    <h1>{date_str}</h1>
     <p>{affirmation}</p>
     <p><a href="logs/{date_str}.html">この日の記録を見る</a></p>
     </body></html>
