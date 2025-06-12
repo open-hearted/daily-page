@@ -22,7 +22,7 @@ with open(f"logs/{date_str}.html", "w", encoding="utf-8") as f:
     <p>{affirmation}</p>
     <iframe
       width="360" height="640"
-      src="https://www.youtube.com/shorts/BUYUN3gXtd8"
+      src="https://www.youtube.com/embed/BUYUN3gXtd8?autoplay=1&mute=1&loop=1&playlist=BUYUN3gXtd8"
       frameborder="0"
       allow="autoplay; encrypted-media; picture-in-picture"
       allowfullscreen>
@@ -37,7 +37,7 @@ with open("index.html", "w", encoding="utf-8") as f:
     <p>{affirmation}</p>
     <iframe
       width="360" height="640"
-      src="https://www.youtube.com/shorts/BUYUN3gXtd8"
+      src="https://www.youtube.com/embed/BUYUN3gXtd8?autoplay=1&mute=1&loop=1&playlist=BUYUN3gXtd8"
       frameborder="0"
       allow="autoplay; encrypted-media; picture-in-picture"
       allowfullscreen>
