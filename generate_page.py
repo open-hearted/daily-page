@@ -20,6 +20,13 @@ with open(f"logs/{date_str}.html", "w", encoding="utf-8") as f:
     <html><body>
     <h1>{date_str} {weekday_str}</h1>
     <p>{affirmation}</p>
+    <iframe>
+      width="360" height="640"
+      src="https://www.youtube.com/shorts/BUYUN3gXtd8"
+      frameborder="0"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen>
+    </iframe>
     </body></html>
     """)
 
