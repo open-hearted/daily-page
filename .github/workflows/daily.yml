@@ -1,4 +1,29 @@
-      - name: Commit & Push
+name: Daily Update
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 毎日 午前9時（JST）に相当
+  workflow_dispatch:       # 手動実行もOKにする
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 リポジトリをチェックアウト
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐍 Pythonセットアップ
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: 🛠 ページ生成スクリプトを実行
+        run: python generate_page.py
+
+      - name: 🔁 変更をコミット＆プッシュ
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
