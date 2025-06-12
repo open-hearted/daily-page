@@ -1,34 +1,31 @@
-name: Daily Update  # ← ワークフローの名前（自由に変更OK）
+name: Daily Update
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # ← 毎日朝9時に実行（UTC0時）※後で説明
-  workflow_dispatch:      # ← 手動実行もできるようにする
+    - cron: '0 0 * * *'  # 毎日朝9時（JST）
+  workflow_dispatch:
 
 jobs:
-  update:                 # ← 実行する「作業の名前」
-    runs-on: ubuntu-latest  # ← GitHubが使う仮想マシンの種類（Ubuntu）
+  update:
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-        # ↑ GitHubリポジトリの中身を取得（必須）
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
           python-version: '3.x'
-        # ↑ Pythonを使えるようにする（バージョンは3.x）
 
-      - name: Generate Page
-        run: |
-          python generate_page.py
-        # ↑ 自分で作ったスクリプトを実行
+      - name: Run daily script
+        run: python generate_page.py
 
       - name: Commit & Push
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
           git add .
-          git commit -m "Daily update"
-          git push
-        # ↑ index.htmlなどの変更をGitHubに戻す（これが重要！）
+          git commit -m "Daily update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes"
+          git push origin HEAD
