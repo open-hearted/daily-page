@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 
 today = datetime.now().strftime("%Y-%m-%d")
-affirmation = "今日も一歩前へ進もう"
+affirmation = "今日もまた一歩前へ進もう"
 
 os.makedirs("logs", exist_ok=True)
 with open(f"logs/{today}.html", "w", encoding="utf-8") as f:
