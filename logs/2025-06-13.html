@@ -4,13 +4,53 @@
   <meta charset="UTF-8">
   <title>2025-06-13 金</title>
   <style>
-    .container { display: flex; align-items: flex-start; gap: 20px; }
-    .video-area { flex: 0 0 auto; }
-    .action-area { display: flex; flex-direction: column; gap: 8px; }
-    #log-button { padding: 8px 16px; font-size: 1rem; }
-    #last-click { font-weight: bold; }
-    /* 記録リスト用 */
-    #records { list-style: none; padding: 0; margin-top: 20px; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    h1, p {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      justify-content: center;
+    }
+    .video-area {
+      text-align: center;
+    }
+    /* 動画サイズ：幅360px × 高さ512px (640pxの80%) */
+    .video-area iframe {
+      width: 360px;
+      height: 512px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .video-area button {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 8px 16px;
+      font-size: 1rem;
+      background: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .video-area button:hover {
+      background: #2980b9;
+    }
+    .action-area {
+      max-width: 300px;
+    }
+    #records {
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+    }
     #records li {
       display: flex;
       justify-content: space-between;
@@ -19,14 +59,16 @@
       border: 1px solid #ccc;
       border-radius: 4px;
       margin-bottom: 8px;
+      font-size: 0.9rem;
     }
     .del-btn {
       background: #e74c3c;
-      color: white;
+      color: #fff;
       border: none;
       padding: 4px 8px;
       border-radius: 3px;
       cursor: pointer;
+      font-size: 0.8rem;
     }
   </style>
 </head>
@@ -35,20 +77,19 @@
   <p>今日も一歩前へ進もう</p>
 
   <div class="container">
+    <!-- 動画＋再生ボタン -->
     <div class="video-area">
+      <button id="play-button">この動画を行う</button><br>
       <iframe
-        width="360"
-        height="512"  <!-- 高さを80%（元640pxの80%=512px）に -->
         src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
-        frameborder="0"
         allow="encrypted-media; picture-in-picture; web-share"
         allowfullscreen>
       </iframe>
     </div>
 
+    <!-- 記録リスト -->
     <div class="action-area">
-      <button id="log-button">記録を追加</button>
-      <div>最終送信時刻：<span id="last-click">まだ送信されていません</span></div>
+      <h2>実施記録</h2>
       <ul id="records"></ul>
     </div>
   </div>
@@ -56,16 +97,24 @@
   <script>
     const STORAGE_KEY = 'dailyPageRecords_2025-06-13';
     let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    const btn    = document.getElementById('log-button');
-    const last   = document.getElementById('last-click');
-    const listEl = document.getElementById('records');
+    const btnPlay   = document.getElementById('play-button');
+    const listEl    = document.getElementById('records');
 
+    // JSTタイムスタンプ生成
+    function getJstTimestamp() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      return `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} `
+           + `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    }
+
+    // レンダリング
     function render() {
       listEl.innerHTML = '';
-      records.forEach((rec, idx) => {
+      records.forEach((time, idx) => {
         const li = document.createElement('li');
         li.innerHTML = `
-          <span>№${rec.count} — ${rec.time}</span>
+          <span>動画を行う：${time}</span>
           <button class="del-btn" data-idx="${idx}">削除</button>
         `;
         listEl.appendChild(li);
@@ -79,18 +128,16 @@
       });
     }
 
+    // 保存＋再レンダリング
     function saveAndRender() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
       render();
     }
 
-    btn.addEventListener('click', () => {
-      const now = new Date();
-      const pad = n => String(n).padStart(2, '0');
-      const ts  = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ` +
-                  `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-      records.push({ count: records.length + 1, time: ts });
-      last.textContent = ts;
+    // 再生ボタンクリック時
+    btnPlay.addEventListener('click', () => {
+      const ts = getJstTimestamp();
+      records.push(ts);
       saveAndRender();
     });
 
