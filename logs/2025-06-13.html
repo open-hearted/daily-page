@@ -2,99 +2,98 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2025-06-13 金</title>
+  <title>肩回しエクササイズ</title>
   <style>
-    .container { display: flex; align-items: flex-start; gap: 20px; }
-    .video-area { flex: 0 0 auto; }
-    .action-area { display: flex; flex-direction: column; gap: 8px; }
-    #log-button { padding: 8px 16px; font-size: 1rem; }
-    #last-click { font-weight: bold; }
-    /* 記録リスト用 */
-    #records { list-style: none; padding: 0; margin-top: 20px; }
-    #records li {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 6px 8px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      margin-bottom: 8px;
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      line-height: 1.5;
     }
-    .del-btn {
-      background: #e74c3c;
-      color: white;
+    #play-button {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 10px 20px;
+      font-size: 1rem;
+      background: #3498db;
+      color: #fff;
       border: none;
-      padding: 4px 8px;
-      border-radius: 3px;
+      border-radius: 4px;
       cursor: pointer;
+    }
+    #play-button:hover {
+      background: #2980b9;
+    }
+    .video-area {
+      margin-bottom: 24px;
+      text-align: center;
+    }
+    .video-area iframe {
+      width: 80%;
+      height: auto;
+      max-width: 720px;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    #activity-log {
+      list-style: none;
+      padding: 0;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    #activity-log li {
+      padding: 8px 12px;
+      border-bottom: 1px solid #ddd;
     }
   </style>
 </head>
 <body>
-  <h1>2025-06-13 金</h1>
-  <p>今日も一歩前へ進もう</p>
+  <h1>肩回しエクササイズ</h1>
+  <button id="play-button">この動画を行う</button>
 
-  <div class="container">
-    <div class="video-area">
-      <iframe
-        width="360" height="640"
-        src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
-        frameborder="0"
-        allow="encrypted-media; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
-    </div>
-
-    <div class="action-area">
-      <button id="log-button">記録を追加</button>
-      <div>最終送信時刻：<span id="last-click">まだ送信されていません</span></div>
-      <ul id="records"></ul>
-    </div>
+  <div class="video-area">
+    <iframe
+      src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
+      allow="encrypted-media; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
   </div>
 
+  <h2>実施記録</h2>
+  <ul id="activity-log"></ul>
+
   <script>
-    const STORAGE_KEY = 'dailyPageRecords_2025-06-13';
+    const STORAGE_KEY = 'karamawashiLog';
+    const logEl = document.getElementById('activity-log');
     let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    const btn    = document.getElementById('log-button');
-    const last   = document.getElementById('last-click');
-    const listEl = document.getElementById('records');
 
-    function render() {
-      listEl.innerHTML = '';
-      records.forEach((rec, idx) => {
+    // 過去記録を描画
+    function renderLog() {
+      logEl.innerHTML = '';
+      records.forEach(ts => {
         const li = document.createElement('li');
-        li.innerHTML = `
-          <span>№${rec.count} — ${rec.time}</span>
-          <button class="del-btn" data-idx="${idx}">削除</button>
-        `;
-        listEl.appendChild(li);
-      });
-      document.querySelectorAll('.del-btn').forEach(b => {
-        b.addEventListener('click', e => {
-          const i = parseInt(e.currentTarget.dataset.idx, 10);
-          records.splice(i, 1);
-          saveAndRender();
-        });
+        li.textContent = `肩回し：${ts}`;
+        logEl.appendChild(li);
       });
     }
 
-    function saveAndRender() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-      render();
-    }
+    renderLog();
 
-    btn.addEventListener('click', () => {
+    document.getElementById('play-button').addEventListener('click', () => {
+      // 現在時刻を YYYY-MM-DD HH:MM:SS 形式で取得
       const now = new Date();
       const pad = n => String(n).padStart(2, '0');
-      const ts  = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ` +
-                  `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-      records.push({ count: records.length + 1, time: ts });
-      last.textContent = ts;
-      saveAndRender();
-    });
+      const timestamp =
+        `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ` +
+        `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
-    // 初期表示
-    render();
+      // ローカルに保存＆画面に追加
+      records.push(timestamp);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      const li = document.createElement('li');
+      li.textContent = `肩回し：${timestamp}`;
+      logEl.appendChild(li);
+    });
   </script>
 </body>
 </html>
