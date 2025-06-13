@@ -90,35 +90,41 @@
   );
 })();
 
-// --- 末尾に追記 ---
+// daily-record.js の一部
 
 /**
  * 自由記入セクション用セットアップ関数
  */
 function setupFreeSection(storageKey, btnId, inputId, listId, label) {
+  const btn    = document.getElementById(btnId);
+  const input  = document.getElementById(inputId);
+  const listEl = document.getElementById(listId);
+
+  // [{ time: "HH:MM", text: "入力内容" }, ...] の形で保存
+  let records = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+  // JST時間を HH:MM で取得
   function getJstTime() {
     const now = new Date();
     const pad = n => String(n).padStart(2, '0');
     return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
   }
-  const btn    = document.getElementById(btnId);
-  const input  = document.getElementById(inputId);
-  const listEl = document.getElementById(listId);
-  let records  = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
+  // 保存済みの timestamp と text を使って描画
   function render() {
     listEl.innerHTML = '';
-    records.forEach((item, idx) => {
+    records.forEach((rec, idx) => {
       const li = document.createElement('li');
       li.innerHTML = `
-        <span>【${getJstTime()}】 ${item}</span>
+        <span>【${rec.time}】 ${rec.text}</span>
         <button class="del-btn" data-idx="${idx}">削除</button>
       `;
       listEl.appendChild(li);
     });
+    // 削除ボタン
     listEl.querySelectorAll('.del-btn').forEach(b => {
       b.addEventListener('click', e => {
-        const i = +e.currentTarget.dataset.idx;
+        const i = parseInt(e.currentTarget.dataset.idx, 10);
         records.splice(i, 1);
         localStorage.setItem(storageKey, JSON.stringify(records));
         render();
@@ -126,27 +132,26 @@ function setupFreeSection(storageKey, btnId, inputId, listId, label) {
     });
   }
 
+  // 追加ボタンクリック時：時刻と入力テキストを記録に入れる
   btn.addEventListener('click', () => {
     const text = input.value.trim();
     if (!text) return;
-    records.push(text);
+    const ts = getJstTime();
+    records.push({ time: ts, text: text });
     localStorage.setItem(storageKey, JSON.stringify(records));
     input.value = '';
     render();
   });
 
+  // 最初の描画
   render();
 }
 
-// ページタイトル（日付）が document.title に入っている想定
-const pageKey = document.title;
-
-// 自由記入（算数）セクションを紐付け
+// 呼び出し例（テンプレートで例示していたIDを前提に）
 setupFreeSection(
-  `study_${pageKey}`,  // localStorageキー
-  'study-btn',         // ボタンID
-  'study-input',       // テキストエリアID
-  'study-list',        // リストULのID
-  '算数の勉強'         // ラベル
+  `study_${document.title}`, 
+  'study-btn', 
+  'study-input', 
+  'study-list',
+  '算数の勉強'
 );
-
