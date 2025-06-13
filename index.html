@@ -30,32 +30,6 @@
       <div>最終送信時刻：<span id="last-click">まだ送信されていません</span></div>
     </div>
   </div>
-
-  <script>
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyZwJD3RULWbmDX3uMC_RogVqMOOlEOhU1bjFvawx73KCFGJh3sdMU5HJU3zQad76HT/exec';  // ←置き換え
-
-    document.getElementById('log-button').addEventListener('click', () => {
-      const now  = new Date();
-      const iso  = now.toISOString();
-      const disp = now.toLocaleString();
-
-      // 画面に表示
-      document.getElementById('last-click').textContent = disp;
-
-      // no-cors モードで投げる
-      fetch(WEBHOOK_URL, {
-        method: 'POST',
-        mode:   'no-cors',
-        body:   JSON.stringify({
-          serial:    'daily-page',
-          timestamp: iso,
-          message:   '',
-          chat_title: document.title,
-          client:     'webpage'
-        })
-      });
-      // 返り値は opaque（透過）なのでチェックせずfire-and-forget
-    });
-  </script>
+  <script src="daily-logger.js"></script>
 </body>
 </html>
