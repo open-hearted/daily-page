@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>{date} {weekday}</title>
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+  <!-- 左上：洗濯ボタン＆リスト -->
+  <div id="laundry-area">
+    <h3>洗濯</h3>
+    <button id="laundry-btn">洗濯を行う</button>
+    <ul id="laundry-list"></ul>
+  </div>
+
+  <h1>{date} {weekday}</h1>
+  <p>{affirmation}</p>
+
+  <!-- 動画1セクション -->
+  <div class="section">
+    <div class="container">
+      <div class="video-area">
+        <button id="play-btn-1">この動画を行う</button><br>
+        <iframe
+          src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
+          allow="encrypted-media; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="action-area">
+        <h2>実施記録（動画1）</h2>
+        <ul id="records1"></ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 動画2セクション -->
+  <div class="section">
+    <div class="container">
+      <div class="video-area">
+        <button id="play-btn-2">この動画を行う</button><br>
+        <iframe
+          src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1"
+          allow="encrypted-media; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="action-area">
+        <h2>実施記録（動画2）</h2>
+        <ul id="records2"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../daily-record.js"></script>
+</body>
+</html>
