@@ -67,6 +67,14 @@
     '洗濯'                       // ラベル
   );
 
+  // --- 追加したい回収用セットアップ ---
+  setupRecords(
+    `dailyLaundryCollect_${document.title}`,
+    'collect-btn',
+    'collect-list',
+    '洗濯物を回収する'
+  );
+
   setupRecords(
     `video1_${pageDate}_BUYUN3gXtd8`,
     'play-btn-1',
