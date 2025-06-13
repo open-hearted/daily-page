@@ -7,27 +7,19 @@
     body {
       font-family: sans-serif;
       padding: 20px;
-      line-height: 1.5;
+      text-align: center;
     }
     h1, p {
-      text-align: center;
+      margin: 0 0 16px;
+    }
+    .section {
+      margin-bottom: 40px;
     }
     .container {
       display: flex;
       align-items: flex-start;
-      gap: 20px;
       justify-content: center;
-    }
-    .video-area {
-      text-align: center;
-    }
-    /* 動画サイズ：幅360px × 高さ512px (640pxの80%) */
-    .video-area iframe {
-      width: 360px;
-      height: 512px;
-      border: none;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      gap: 20px;
     }
     .video-area button {
       display: inline-block;
@@ -43,15 +35,27 @@
     .video-area button:hover {
       background: #2980b9;
     }
+    .video-area iframe {
+      width: 360px;
+      height: 512px; /* 640px の 80% */
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
     .action-area {
       max-width: 300px;
+      text-align: left;
     }
-    #records {
+    .action-area h2 {
+      margin: 0 0 8px;
+      font-size: 1.2rem;
+    }
+    ul {
       list-style: none;
       padding: 0;
-      margin-top: 20px;
+      margin: 0;
     }
-    #records li {
+    li {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -76,31 +80,44 @@
   <h1>2025-06-13 金</h1>
   <p>今日も一歩前へ進もう</p>
 
-  <div class="container">
-    <!-- 動画＋再生ボタン -->
-    <div class="video-area">
-      <button id="play-button">この動画を行う</button><br>
-      <iframe
-        src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
-        allow="encrypted-media; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
+  <!-- 動画1 セクション -->
+  <div class="section">
+    <div class="container">
+      <div class="video-area">
+        <button id="play-btn-1">この動画を行う</button><br>
+        <iframe
+          src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
+          allow="encrypted-media; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="action-area">
+        <h2>実施記録（動画1）</h2>
+        <ul id="records1"></ul>
+      </div>
     </div>
+  </div>
 
-    <!-- 記録リスト -->
-    <div class="action-area">
-      <h2>実施記録</h2>
-      <ul id="records"></ul>
+  <!-- 動画2 セクション -->
+  <div class="section">
+    <div class="container">
+      <div class="video-area">
+        <button id="play-btn-2">この動画を行う</button><br>
+        <iframe
+          src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1"
+          allow="encrypted-media; picture-in-picture; web-share"
+          allowfullscreen>
+        </iframe>
+      </div>
+      <div class="action-area">
+        <h2>実施記録（動画2）</h2>
+        <ul id="records2"></ul>
+      </div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'dailyPageRecords_2025-06-13';
-    let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-    const btnPlay   = document.getElementById('play-button');
-    const listEl    = document.getElementById('records');
-
-    // JSTタイムスタンプ生成
+    // JST形式のタイムスタンプを返す
     function getJstTimestamp() {
       const now = new Date();
       const pad = n => String(n).padStart(2, '0');
@@ -108,41 +125,54 @@
            + `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
     }
 
-    // レンダリング
-    function render() {
-      listEl.innerHTML = '';
-      records.forEach((time, idx) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <span>動画を行う：${time}</span>
-          <button class="del-btn" data-idx="${idx}">削除</button>
-        `;
-        listEl.appendChild(li);
-      });
-      document.querySelectorAll('.del-btn').forEach(btn => {
-        btn.addEventListener('click', e => {
-          const i = parseInt(e.currentTarget.dataset.idx, 10);
-          records.splice(i, 1);
-          saveAndRender();
-        });
-      });
-    }
+    // ボタンID・レコードID・localStorageキーを受け取り、機能をセットアップ
+    function setupRecords(storageKey, btnId, recordsId) {
+      const btn    = document.getElementById(btnId);
+      const listEl = document.getElementById(recordsId);
+      let records  = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
-    // 保存＋再レンダリング
-    function saveAndRender() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      const render = () => {
+        listEl.innerHTML = '';
+        records.forEach((time, idx) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            <span>動画を行う：${time}</span>
+            <button class="del-btn" data-idx="${idx}">削除</button>
+          `;
+          listEl.appendChild(li);
+        });
+        listEl.querySelectorAll('.del-btn').forEach(b => {
+          b.addEventListener('click', e => {
+            const i = parseInt(e.currentTarget.dataset.idx, 10);
+            records.splice(i, 1);
+            localStorage.setItem(storageKey, JSON.stringify(records));
+            render();
+          });
+        });
+      };
+
+      btn.addEventListener('click', () => {
+        const ts = getJstTimestamp();
+        records.push(ts);
+        localStorage.setItem(storageKey, JSON.stringify(records));
+        render();
+      });
+
       render();
     }
 
-    // 再生ボタンクリック時
-    btnPlay.addEventListener('click', () => {
-      const ts = getJstTimestamp();
-      records.push(ts);
-      saveAndRender();
-    });
-
-    // 初期表示
-    render();
+    // 動画1用セットアップ
+    setupRecords(
+      'dailyPageRecords_2025-06-13_BUYUN3gXtd8',
+      'play-btn-1',
+      'records1'
+    );
+    // 動画2用セットアップ
+    setupRecords(
+      'dailyPageRecords_2025-06-13_nbm-G5i-NJk',
+      'play-btn-2',
+      'records2'
+    );
   </script>
 </body>
 </html>
