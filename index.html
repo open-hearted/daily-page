@@ -4,27 +4,11 @@
   <meta charset="UTF-8">
   <title>2025-06-13 金</title>
   <style>
-    .container {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px; /* 動画とUIの間隔 */
-    }
-    .video-area {
-      flex: 0 0 auto;
-    }
-    .action-area {
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      gap: 8px;
-    }
-    #log-button {
-      padding: 8px 16px;
-      font-size: 1rem;
-    }
-    #last-click {
-      font-weight: bold;
-    }
+    .container { display: flex; align-items: flex-start; gap: 20px; }
+    .video-area { flex: 0 0 auto; }
+    .action-area { display: flex; flex-direction: column; gap: 8px; }
+    #log-button { padding:8px 16px; font-size:1rem; }
+    #last-click { font-weight:bold; }
   </style>
 </head>
 <body>
@@ -32,7 +16,6 @@
   <p>今日も一歩前へ進もう</p>
 
   <div class="container">
-    <!-- 左：動画 -->
     <div class="video-area">
       <iframe
         width="360" height="640"
@@ -42,50 +25,36 @@
         allowfullscreen>
       </iframe>
     </div>
-
-    <!-- 右：送信ボタン＋時刻表示 -->
     <div class="action-area">
       <button id="log-button">時刻をスプシに送信</button>
-      <div>
-        <span>最終送信時刻：</span>
-        <span id="last-click">まだ送信されていません</span>
-      </div>
-      <div>
-        <a href="logs/2025-06-13.html">この日の記録を見る</a>
-      </div>
+      <div>最終送信時刻：<span id="last-click">まだ送信されていません</span></div>
     </div>
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyZwJD3RULWbmDX3uMC_RogVqMOOlEOhU1bjFvawx73KCFGJh3sdMU5HJU3zQad76HT/exec';  // ← ご自身のURLに差し替え
-  
-    document.getElementById('log-button').addEventListener('click', async () => {
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyZwJD3RULWbmDX3uMC_RogVqMOOlEOhU1bjFvawx73KCFGJh3sdMU5HJU3zQad76HT/exec';  // ←置き換え
+
+    document.getElementById('log-button').addEventListener('click', () => {
       const now  = new Date();
       const iso  = now.toISOString();
       const disp = now.toLocaleString();
-  
-      // 画面表示用
+
+      // 画面に表示
       document.getElementById('last-click').textContent = disp;
-  
-      // 固定文字列 "daily-page" を serial にセット
-      const payload = {
-        serial:     'daily-page',      // ← ココを変更
-        timestamp:  iso,
-        message:    '',                // 必要に応じて
-        chat_title: document.title,
-        client:     'webpage'
-      };
-  
-      try {
-        const res = await fetch(WEBHOOK_URL, {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify(payload)
-        });
-        if (!res.ok) console.error('送信失敗', res.status, await res.text());
-      } catch (err) {
-        console.error('送信エラー', err);
-      }
+
+      // no-cors モードで投げる
+      fetch(WEBHOOK_URL, {
+        method: 'POST',
+        mode:   'no-cors',
+        body:   JSON.stringify({
+          serial:    'daily-page',
+          timestamp: iso,
+          message:   '',
+          chat_title: document.title,
+          client:     'webpage'
+        })
+      });
+      // 返り値は opaque（透過）なのでチェックせずfire-and-forget
     });
   </script>
 </body>
