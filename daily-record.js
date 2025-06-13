@@ -89,3 +89,12 @@
     '動画2を行う'
   );
 })();
+
+// 算数（自由記入）
+setupFreeSection(
+  `study_${document.title}`, 
+  'study-btn', 
+  'study-input', 
+  'study-list',
+  '算数の勉強'
+);
