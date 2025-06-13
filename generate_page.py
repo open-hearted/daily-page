@@ -55,7 +55,7 @@ daily_html = f"""<!DOCTYPE html>
     <div class="video-area">
       <iframe
         width="360" height="640"
-        src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1&loop=1&playlist=BUYUN3gXtd8"
+        src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
         frameborder="0"
         allow="encrypted-media; picture-in-picture; web-share"
         allowfullscreen>
