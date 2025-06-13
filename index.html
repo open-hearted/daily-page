@@ -4,15 +4,26 @@
   <meta charset="UTF-8">
   <title>2025-06-13 金</title>
   <style>
-    /* ボタン周りの簡易スタイル */
+    .container {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px; /* 動画とUIの間隔 */
+    }
+    .video-area {
+      flex: 0 0 auto;
+    }
+    .action-area {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 8px;
+    }
     #log-button {
       padding: 8px 16px;
       font-size: 1rem;
-      margin-top: 16px;
     }
     #last-click {
       font-weight: bold;
-      margin-left: 8px;
     }
   </style>
 </head>
@@ -20,24 +31,33 @@
   <h1>2025-06-13 金</h1>
   <p>今日も一歩前へ進もう</p>
 
-  <iframe
-    width="360" height="640"
-    src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1&loop=1&playlist=BUYUN3gXtd8"
-    frameborder="0"
-    allow="autoplay; encrypted-media; picture-in-picture; web-share"
-    allowfullscreen>
-  </iframe>
+  <div class="container">
+    <!-- 左：動画 -->
+    <div class="video-area">
+      <iframe
+        width="360" height="640"
+        src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1&loop=1&playlist=BUYUN3gXtd8"
+        frameborder="0"
+        allow="encrypted-media; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
 
-  <!-- ここからログ送信パーツ -->
-  <p>
-    <button id="log-button">時刻をスプシに送信</button>
-    最終送信時刻：<span id="last-click">まだ送信されていません</span>
-  </p>
-
-  <p><a href="logs/2025-06-13.html">この日の記録を見る</a></p>
+    <!-- 右：送信ボタン＋時刻表示 -->
+    <div class="action-area">
+      <button id="log-button">時刻をスプシに送信</button>
+      <div>
+        <span>最終送信時刻：</span>
+        <span id="last-click">まだ送信されていません</span>
+      </div>
+      <div>
+        <a href="logs/2025-06-13.html">この日の記録を見る</a>
+      </div>
+    </div>
+  </div>
 
   <script>
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/XXXXX/exec';  // ← ご自分のURLに差し替え
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/XXXXX/exec';  // ← 置き換えてください
 
     const btn = document.getElementById('log-button');
     const last = document.getElementById('last-click');
