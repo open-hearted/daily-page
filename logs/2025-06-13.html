@@ -2,25 +2,99 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>2025-06-13 (金)</title>
+  <title>2025-06-13 金</title>
   <style>
-    /* 必要に応じてスタイルを追加 */
+    .container { display: flex; align-items: flex-start; gap: 20px; }
+    .video-area { flex: 0 0 auto; }
+    .action-area { display: flex; flex-direction: column; gap: 8px; }
+    #log-button { padding: 8px 16px; font-size: 1rem; }
+    #last-click { font-weight: bold; }
+    /* 記録リスト用 */
+    #records { list-style: none; padding: 0; margin-top: 20px; }
+    #records li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .del-btn {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      border-radius: 3px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <h1>2025-06-13 (金)</h1>
+  <h1>2025-06-13 金</h1>
   <p>今日も一歩前へ進もう</p>
 
-  <!-- 動画埋め込み -->
-  <iframe
-    width="360" height="640"
-    src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1&loop=1&playlist=BUYUN3gXtd8"
-    frameborder="0"
-    allow="encrypted-media; picture-in-picture; web-share"
-    allowfullscreen>
-  </iframe>
+  <div class="container">
+    <div class="video-area">
+      <iframe
+        width="360" height="640"
+        src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1&loop=1&playlist=BUYUN3gXtd8"
+        frameborder="0"
+        allow="encrypted-media; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
 
-  <!-- レコード管理スクリプト -->
-  <script src="../daily-record.js"></script>
+    <div class="action-area">
+      <button id="log-button">記録を追加</button>
+      <div>最終送信時刻：<span id="last-click">まだ送信されていません</span></div>
+      <ul id="records"></ul>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'dailyPageRecords_2025-06-13';
+    let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    const btn    = document.getElementById('log-button');
+    const last   = document.getElementById('last-click');
+    const listEl = document.getElementById('records');
+
+    function render() {
+      listEl.innerHTML = '';
+      records.forEach((rec, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <span>№${rec.count} — ${rec.time}</span>
+          <button class="del-btn" data-idx="${idx}">削除</button>
+        `;
+        listEl.appendChild(li);
+      });
+      document.querySelectorAll('.del-btn').forEach(b => {
+        b.addEventListener('click', e => {
+          const i = parseInt(e.currentTarget.dataset.idx, 10);
+          records.splice(i, 1);
+          saveAndRender();
+        });
+      });
+    }
+
+    function saveAndRender() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+      render();
+    }
+
+    btn.addEventListener('click', () => {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const ts  = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ` +
+                  `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      records.push({ count: records.length + 1, time: ts });
+      last.textContent = ts;
+      saveAndRender();
+    });
+
+    // 初期表示
+    render();
+  </script>
 </body>
 </html>
