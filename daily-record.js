@@ -90,11 +90,63 @@
   );
 })();
 
-// 算数（自由記入）
+// --- 末尾に追記 ---
+
+/**
+ * 自由記入セクション用セットアップ関数
+ */
+function setupFreeSection(storageKey, btnId, inputId, listId, label) {
+  function getJstTime() {
+    const now = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    return `${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  }
+  const btn    = document.getElementById(btnId);
+  const input  = document.getElementById(inputId);
+  const listEl = document.getElementById(listId);
+  let records  = JSON.parse(localStorage.getItem(storageKey) || '[]');
+
+  function render() {
+    listEl.innerHTML = '';
+    records.forEach((item, idx) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <span>【${getJstTime()}】 ${item}</span>
+        <button class="del-btn" data-idx="${idx}">削除</button>
+      `;
+      listEl.appendChild(li);
+    });
+    listEl.querySelectorAll('.del-btn').forEach(b => {
+      b.addEventListener('click', e => {
+        const i = +e.currentTarget.dataset.idx;
+        records.splice(i, 1);
+        localStorage.setItem(storageKey, JSON.stringify(records));
+        render();
+      });
+    });
+  }
+
+  btn.addEventListener('click', () => {
+    const text = input.value.trim();
+    if (!text) return;
+    records.push(text);
+    localStorage.setItem(storageKey, JSON.stringify(records));
+    input.value = '';
+    render();
+  });
+
+  render();
+}
+
+// ページタイトル（日付）が document.title に入っている想定
+const pageKey = document.title;
+
+// 自由記入（算数）セクションを紐付け
 setupFreeSection(
-  `study_${document.title}`, 
-  'study-btn', 
-  'study-input', 
-  'study-list',
-  '算数の勉強'
+  `study_${pageKey}`,  // localStorageキー
+  'study-btn',         // ボタンID
+  'study-input',       // テキストエリアID
+  'study-list',        // リストULのID
+  '算数の勉強'         // ラベル
 );
+
