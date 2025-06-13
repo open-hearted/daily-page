@@ -1,87 +1,15 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>2025-06-13 金</title>
-  <style>
-    .container {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;        /* 列間のスペース */
-    }
-    .video-area {
-      flex: 1;          /* 動画側は可変幅 */
-    }
-    .expense-area {
-      width: 200px;     /* お金入力欄の固定幅 */
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 4px;
-    }
-    .expense-area h2 {
-      margin-top: 0;
-      font-size: 1.1em;
-    }
-    .expense-area input {
-      width: 100%;
-      padding: 4px;
-      box-sizing: border-box;
-      font-size: 1em;
-    }
-    .expense-area button {
-      margin-top: 8px;
-      width: 100%;
-      padding: 6px;
-      font-size: 1em;
-    }
-  </style>
-</head>
-<body>
-  <h1>2025-06-13 金</h1>
-  <p>今日も一歩前へ進もう</p>
 
-  <div class="container">
-    <!-- 左カラム：動画 -->
-    <div class="video-area">
-      <iframe
-        width="360" height="640"
-        src="https://www.youtube.com/embed/BUYUN3gXtd8?autoplay=1&mute=1&loop=1&playlist=BUYUN3gXtd8"
-        frameborder="0"
-        allow="autoplay; encrypted-media; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
-    </div>
-
-    <!-- 右カラム：お金入力 -->
-    <div class="expense-area">
-      <h2>使ったお金</h2>
-      <input
-        type="number"
-        id="expense"
-        name="expense"
-        placeholder="例: 1200"
-        step="1"
-        min="0"
-      />
-      <button onclick="saveExpense()">保存</button>
-    </div>
-  </div>
-
-  <script>
-    // 日付ごとに localStorage に保存／読み込みできる簡易例
-    const dateKey = 'expense_2025-06-13';  // 日付は動的に変えると良い
-    const expenseInput = document.getElementById('expense');
-
-    // ページ読み込み時に保存済みを表示
-    const saved = localStorage.getItem(dateKey);
-    if (saved !== null) expenseInput.value = saved;
-
-    // 保存ボタン
-    function saveExpense() {
-      const val = expenseInput.value;
-      localStorage.setItem(dateKey, val);
-      alert('保存しました：' + val + ' 円');
-    }
-  </script>
-</body>
-</html>
+    <html><body>
+    <h1>2025-06-13  金</h1>
+    <p>今日も一歩前へ進もう</p>
+    <iframe
+      width="360" height="640"
+      src="https://www.youtube.com/embed/BUYUN3gXtd8?autoplay=1&mute=1&loop=1&playlist=BUYUN3gXtd8"
+      frameborder="0"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+    </body></html>
+    <p><a href="logs/2025-06-13.html">この日の記録を見る</a></p>
+    </body></html>
+    
