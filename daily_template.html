@@ -6,11 +6,21 @@
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-  <!-- 左上：洗濯ボタン＆リスト -->
+  <!-- 洗濯セクション -->
   <div id="laundry-area">
     <h3>洗濯</h3>
+    <!-- ① 洗濯を行う -->
     <button id="laundry-btn">洗濯を行う</button>
+    <!-- ② 洗濯物を回収する -->
+    <button id="collect-btn">洗濯物を回収する</button>
+
+    <!-- 洗濯実施記録 -->
+    <h4>実施記録（洗濯）</h4>
     <ul id="laundry-list"></ul>
+
+    <!-- 回収実施記録 -->
+    <h4>実施記録（回収）</h4>
+    <ul id="collect-list"></ul>
   </div>
 
   <h1>{date} {weekday}</h1>
