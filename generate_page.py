@@ -18,7 +18,7 @@ daily_html = f"""<!DOCTYPE html>
   <h1>{date_str} ({weekday_str})</h1>
   <p>{affirmation}</p>
   <!-- ここに localStorage 管理用のスクリプトを入れる -->
-  <script src="../daily-record.js"></script>
+  <script src="../daily-logger.js"></script>
 </body>
 </html>
 """
