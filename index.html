@@ -57,25 +57,30 @@
   </div>
 
   <script>
-    const WEBHOOK_URL = 'https://script.google.com/macros/s/XXXXX/exec';  // ← 置き換えてください
-
-    const btn = document.getElementById('log-button');
-    const last = document.getElementById('last-click');
-
-    btn.addEventListener('click', async () => {
-      const now = new Date();
-      const iso = now.toISOString();
+    const WEBHOOK_URL = 'https://script.google.com/macros/s/AKfycbyZwJD3RULWbmDX3uMC_RogVqMOOlEOhU1bjFvawx73KCFGJh3sdMU5HJU3zQad76HT/exec';  // ← ご自身のURLに差し替え
+  
+    document.getElementById('log-button').addEventListener('click', async () => {
+      const now  = new Date();
+      const iso  = now.toISOString();
       const disp = now.toLocaleString();
-
-      // ページ上に表示
-      last.textContent = disp;
-
-      // Webhookへ送信
+  
+      // 画面表示用
+      document.getElementById('last-click').textContent = disp;
+  
+      // 固定文字列 "daily-page" を serial にセット
+      const payload = {
+        serial:     'daily-page',      // ← ココを変更
+        timestamp:  iso,
+        message:    '',                // 必要に応じて
+        chat_title: document.title,
+        client:     'webpage'
+      };
+  
       try {
         const res = await fetch(WEBHOOK_URL, {
-          method: 'POST',
+          method:  'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ timestamp: iso })
+          body:    JSON.stringify(payload)
         });
         if (!res.ok) console.error('送信失敗', res.status, await res.text());
       } catch (err) {
