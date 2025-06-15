@@ -3,8 +3,8 @@ name: Five-Minute Update
 
 on:
   schedule:
-    - cron: '*/5 * * * *'   # 5分ごと (GitHub Actions の最小間隔)
-  workflow_dispatch:
+    - cron: '*/7 * * * *'   # 7分ごと
+  # workflow_dispatch:
 
 
 permissions:
