@@ -1,14 +1,13 @@
-# .github/workflows/7min-update.yml
-name: Hourly Update
+# .github/workflows/test-update.yml
+name: Test Update (Every 5 Minutes)
 
 on:
   schedule:
-    - cron: '0 * * * *'   # 7分ごと
-  # workflow_dispatch:
-
+    - cron: '*/5 * * * *'    # 5分ごとに実行
+  workflow_dispatch:         # 手動テスト用
 
 permissions:
-  contents: write          # リポジトリへの書き込み権限
+  contents: write            # リポジトリへの書き込み権限
 
 jobs:
   update:
@@ -16,9 +15,9 @@ jobs:
 
     steps:
       - name: 📦 Check out repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
 
       - name: 🐍 Set up Python
         uses: actions/setup-python@v4
@@ -32,6 +31,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add .
-          git commit -m "Auto update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git push origin HEAD
+          git add logs/*.html index.html
+          git commit -m "Test update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push origin main
