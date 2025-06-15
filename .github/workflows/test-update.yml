@@ -1,36 +1,36 @@
 # .github/workflows/test-update.yml
-name: Test Update (Every 5 Minutes)
+# name: Test Update (Every 5 Minutes)
 
-on:
-  schedule:
-    - cron: '*/5 * * * *'    # 5分ごとに実行
-  workflow_dispatch:         # 手動テスト用
+# on:
+#   schedule:
+#     - cron: '*/5 * * * *'    # 5分ごとに実行
+#   workflow_dispatch:         # 手動テスト用
 
-permissions:
-  contents: write            # リポジトリへの書き込み権限
+# permissions:
+#   contents: write            # リポジトリへの書き込み権限
 
-jobs:
-  update:
-    runs-on: ubuntu-latest
+# jobs:
+#   update:
+#     runs-on: ubuntu-latest
 
-    steps:
-      - name: 📦 Check out repository
-        uses: actions/checkout@v3
-        with:
-          ref: main
+#     steps:
+#       - name: 📦 Check out repository
+#         uses: actions/checkout@v3
+#         with:
+#           ref: main
 
-      - name: 🐍 Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+#       - name: 🐍 Set up Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.x'
 
-      - name: 🛠 Run page generation script
-        run: python generate_page.py
+#       - name: 🛠 Run page generation script
+#         run: python generate_page.py
 
-      - name: 🔁 Commit & Push changes
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add logs/*.html index.html
-          git commit -m "Test update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
-          git push origin main
+#       - name: 🔁 Commit & Push changes
+#         run: |
+#           git config user.name "github-actions"
+#           git config user.email "github-actions@github.com"
+#           git add logs/*.html index.html
+#           git commit -m "Test update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+#           git push origin main
