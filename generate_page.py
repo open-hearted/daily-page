@@ -20,7 +20,7 @@ with open(INDEX_TEMPLATE, "r", encoding="utf-8") as f:
 # --- 現在日時を JST で取得 ---
 JST = timezone(timedelta(hours=9))
 now = datetime.now(JST)
-date_str    = now.strftime("%Y-%m-%d %H:%M")
+date_str    = now.strftime("%Y-%m-%d-%H-%M")
 weekday_str = WEEKDAY_LIST[now.weekday()]
 
 # --- logs ディレクトリを作成 ---
