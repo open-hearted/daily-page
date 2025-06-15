@@ -1,5 +1,5 @@
-# .github/workflows/5min-update.yml
-name: Five-Minute Update
+# .github/workflows/7min-update.yml
+name: Seven-Minute Update
 
 on:
   schedule:
