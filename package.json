@@ -1,0 +1,5 @@
+{
+  "scripts": {
+    "vercel-build": "python generate_page.py"
+  }
+}
