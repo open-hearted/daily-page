@@ -1,0 +1,35 @@
+# .github/workflows/5min-update.yml
+name: Five-Minute Update
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # 5分ごと (GitHub Actions の最小間隔)
+
+permissions:
+  contents: write          # リポジトリへの書き込み権限
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Check out repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: 🛠 Run page generation script
+        run: python generate_page.py
+
+      - name: 🔁 Commit & Push changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add .
+          git commit -m "Auto update: $(date '+%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push origin HEAD
