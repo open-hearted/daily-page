@@ -4,6 +4,8 @@ name: Five-Minute Update
 on:
   schedule:
     - cron: '*/5 * * * *'   # 5分ごと (GitHub Actions の最小間隔)
+  workflow_dispatch:
+
 
 permissions:
   contents: write          # リポジトリへの書き込み権限
