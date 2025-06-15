@@ -3,7 +3,7 @@ name: Daily Update
 on:
   schedule:
     # - cron: '0 0 * * *'
-    - cron: '20 1 * * *'  # ← JST 10:20 実行
+    - cron: '30 1 * * *'  # ← JST 10:20 実行
   workflow_dispatch:
 
 permissions:
