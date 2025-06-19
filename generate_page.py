@@ -8,7 +8,7 @@ LOG_DIR         = "logs"
 DAILY_TEMPLATE  = "daily_template.html"
 INDEX_TEMPLATE  = "index_template.html"
 INDEX_OUTPUT    = "index.html"
-AFFIRMATION     = "今日も一歩前へ進もう"
+AFFIRMATION     = "今日も一歩前へ進もう\n片付けよう\n6/10 導かれて、自分が書いた「〇ガチで自助努力する」を見つけた マーティンセリグマンAIでも、近い回答が出た。6/19にもこの文言に偶然辿り着いた。Natalie Dawsonともシンクロしてる。9日間忘れてた。"
 WEEKDAY_LIST    = ["月", "火", "水", "木", "金", "土", "日"]
 
 # --- テンプレート読み込み ---
