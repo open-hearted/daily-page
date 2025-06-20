@@ -3,7 +3,7 @@
 body {
   font-family: sans-serif;
   padding: 20px;
-  position: relative;
+  margin-left: 300px;
 }
 
 h1, p {
@@ -12,7 +12,8 @@ h1, p {
 
 /* 洗濯エリア */
 #laundry-area {
-  position: absolute;
+  position: fixed;
+  width: 260px;
   top: 20px;
   left: 20px;
   background: #f8f8f8;
