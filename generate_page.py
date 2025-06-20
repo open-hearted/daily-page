@@ -8,8 +8,7 @@ LOG_DIR         = "logs"
 DAILY_TEMPLATE  = "daily_template.html"
 INDEX_TEMPLATE  = "index_template.html"
 INDEX_OUTPUT    = "index.html"
-AFFIRMATION     = 
-'''懺悔誓願の文
+AFFIRMATION     = '''懺悔誓願の文
 懺悔いたします。
 無明の闇におおわれて、身、口、意、の三業によっておかしてしまったあやまちがあります。
 仏、法、僧、に対するあやまち、恩師に対するあやまち、生きとし生けるものに対するあやまち。
