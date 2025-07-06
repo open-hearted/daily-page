@@ -7,10 +7,9 @@
 </head>
 <body>
   <!-- エクスポートボタン -->
-  <div style="text-align:right; margin:8px;">
+  <div style="text-align:right; margin: 8px;">
     <button id="export-btn">ローカルストレージを書き出す</button>
   </div>
-
   <!-- 洗濯セクション -->
   <div id="laundry-area">
     <h3>洗濯</h3>
@@ -24,7 +23,22 @@
 
   <h1>{date} {weekday}</h1>
   <p style="white-space: pre-line;">{affirmation}</p>
-
+  <p>
+  <a href="https://www.tufs.ac.jp/ts/personal/choes/korean/middle/text/kairei1.html" target="_blank" rel="noopener">
+    訓民正音解例
+  </a>
+  </p>
+  <p>
+  <a href="https://www.su-gaku.net/suken/support/past_questions/" target="_blank" rel="noopener">
+    算数検定過去問
+  </a>
+  </p>
+  <p>
+  <a href="https://aws.amazon.com/jp/training/?nc2=h_ql_le_tc" target="_blank" rel="noopener">
+    AWS トレーニングと認定
+  </a>
+  </p>
+  
   <!-- 日記セクション -->
   <div class="section">
     <div class="container">
@@ -71,34 +85,25 @@
     </div>
   </div>
 
-  <!-- 動画セクション（1つだけ） -->
+  <!-- 動画1セクション -->
   <div class="section">
     <div class="container">
       <div class="video-area">
-        <button id="play-btn">この動画を行う</button><br>
+        <button id="play-btn-1">この動画を行う</button><br>
         <iframe
-          src="https://www.youtube.com/embed/BUYUN3gXtd8?mute=1"
+          src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1"
           allow="encrypted-media; picture-in-picture; web-share"
           allowfullscreen>
         </iframe>
       </div>
       <div class="action-area">
-        <h2>実施記録（動画）</h2>
-        <ul id="records"></ul>
+        <h2>実施記録（動画1）</h2>
+        <ul id="records1"></ul>
       </div>
     </div>
   </div>
 
   <!-- 共通スクリプト読み込み -->
   <script src="../daily-record.js"></script>
-  <script>
-    // 動画用のセットアップ呼び出し
-    setupRecords(
-      `video_${{document.title}}_BUYUN3gXtd8`,
-      'play-btn',
-      'records',
-      '動画を行う'
-    );
-  </script>
 </body>
 </html>
