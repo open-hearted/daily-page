@@ -1,3 +1,43 @@
+// =========================
+// UI操作系（トグル・タスク追加）
+// =========================
+function toggle(el) {
+  el.classList.toggle('checked');
+  el.classList.toggle('unchecked');
+}
+
+function addLaundryTask() {
+  const container = document.getElementById('laundry-tasks');
+  const row = document.createElement('div');
+  row.className = 'task-row';
+
+  row.innerHTML = `
+    <span class="step checked" onclick="toggle(this)" title="洗濯">🧺</span>
+    <span class="step unchecked" onclick="toggle(this)" title="回収">📥</span>
+    <span class="step unchecked" onclick="toggle(this)" title="干す">🌞</span>
+    <span class="step unchecked" onclick="toggle(this)" title="しまう">📦</span>
+    <button onclick="this.parentElement.remove()">削除</button>
+  `;
+
+  container.appendChild(row);
+}
+
+function addCleanupTask() {
+  const container = document.getElementById('cleanup-tasks');
+  const row = document.createElement('div');
+  row.className = 'task-row';
+
+  row.innerHTML = `
+    <input type="text" placeholder="掃除した場所や内容を入力" style="flex:1;">
+    <button onclick="this.parentElement.remove()">削除</button>
+  `;
+
+  container.appendChild(row);
+}
+
+// =========================
+// ローカルストレージ + 記録管理
+// =========================
 document.addEventListener('DOMContentLoaded', () => {
   function getJstTime() {
     const now = new Date();
