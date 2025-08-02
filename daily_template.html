@@ -34,26 +34,22 @@
   </style>
 </head>
 <body>
-  <!-- エクスポートボタン -->
   <div style="text-align:right; margin: 8px;">
     <button id="export-btn">ローカルストレージを書き出す</button>
   </div>
 
-  <!-- 洗濯セクション -->
   <div class="section">
     <h3>🧺 洗濯</h3>
     <button onclick="addLaundryTask()">🧺 洗濯を行う</button>
     <div id="laundry-tasks"></div>
   </div>
 
-  <!-- 片付けセクション -->
   <div class="section">
     <h3>🧹 掃除</h3>
     <button onclick="addCleanupTask()">🧹 掃除を記録</button>
     <div id="cleanup-tasks"></div>
   </div>
 
-  <!-- 日付とアファメーション -->
   <h1>{date} {weekday}</h1>
   <p style="white-space: pre-line;">{affirmation}</p>
   <p>
@@ -64,7 +60,6 @@
     2025/08/01,02&emsp;考えついた。一番ひどいこと。ママとパパには、私に頭の良さと、まぁまぁ健康な肉体を遺伝してくれたことを感謝する。<br>　
   </p>
 
-  <!-- 日記セクション -->
   <div class="section">
     <div class="container">
       <h2>日記</h2>
@@ -75,7 +70,6 @@
     </div>
   </div>
 
-  <!-- 支出記録セクション -->
   <div class="section">
     <div class="container">
       <h2>支出記録</h2>
@@ -87,7 +81,6 @@
     </div>
   </div>
 
-  <!-- 算数の勉強セクション -->
   <div class="section">
     <div class="container">
       <h2>算数の勉強</h2>
@@ -98,7 +91,6 @@
     </div>
   </div>
 
-  <!-- 動画1セクション -->
   <div class="section">
     <div class="container">
       <button id="play-btn-1">この動画を行う</button><br>
@@ -108,15 +100,14 @@
     </div>
   </div>
 
-  <!-- 共通スクリプト + 洗濯・掃除用JS -->
   <script src="../daily-record.js"></script>
   <script>
-    function toggle(el) {
+    function toggle(el) {{
       el.classList.toggle('checked');
       el.classList.toggle('unchecked');
-    }
+    }}
 
-    function addLaundryTask() {
+    function addLaundryTask() {{
       const container = document.getElementById('laundry-tasks');
       const row = document.createElement('div');
       row.className = 'task-row';
@@ -130,9 +121,9 @@
       `;
 
       container.appendChild(row);
-    }
+    }}
 
-    function addCleanupTask() {
+    function addCleanupTask() {{
       const container = document.getElementById('cleanup-tasks');
       const row = document.createElement('div');
       row.className = 'task-row';
@@ -143,7 +134,7 @@
       `;
 
       container.appendChild(row);
-    }
+    }}
   </script>
 </body>
 </html>
