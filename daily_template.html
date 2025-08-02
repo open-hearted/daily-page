@@ -4,103 +4,146 @@
   <meta charset="UTF-8">
   <title>{date} {weekday}</title>
   <link rel="stylesheet" href="../style.css">
+  <style>
+    body { font-family: sans-serif; padding: 1rem; line-height: 1.6; }
+    .icon-button {
+      font-size: 1.5rem;
+      cursor: pointer;
+      margin-right: 0.5rem;
+    }
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .step {
+      cursor: pointer;
+      user-select: none;
+    }
+    .checked::after {
+      content: "✅";
+      margin-left: 0.3rem;
+    }
+    .unchecked::after {
+      content: "⬜";
+      margin-left: 0.3rem;
+    }
+    .section { margin-top: 2rem; }
+    .container { padding: 0.5rem 0; }
+  </style>
 </head>
 <body>
   <!-- エクスポートボタン -->
   <div style="text-align:right; margin: 8px;">
     <button id="export-btn">ローカルストレージを書き出す</button>
   </div>
+
   <!-- 洗濯セクション -->
-  <div id="laundry-area">
-    <h3>洗濯</h3>
-    <button id="laundry-btn">洗濯を行う</button>
-    <button id="collect-btn">洗濯物を回収する</button>
-    <h4>実施記録（洗濯）</h4>
-    <ul id="laundry-list"></ul>
-    <h4>実施記録（回収）</h4>
-    <ul id="collect-list"></ul>
+  <div class="section">
+    <h3>🧺 洗濯</h3>
+    <button onclick="addLaundryTask()">🧺 洗濯を行う</button>
+    <div id="laundry-tasks"></div>
   </div>
 
+  <!-- 片付けセクション -->
+  <div class="section">
+    <h3>🧹 掃除</h3>
+    <button onclick="addCleanupTask()">🧹 掃除を記録</button>
+    <div id="cleanup-tasks"></div>
+  </div>
+
+  <!-- 日付とアファメーション -->
   <h1>{date} {weekday}</h1>
   <p style="white-space: pre-line;">{affirmation}</p>
   <p>
-  <a href="https://www.tufs.ac.jp/ts/personal/choes/korean/middle/text/kairei1.html" target="_blank" rel="noopener">
-    訓民正音解例&ensp;
-  </a>
-  <a href="https://www.su-gaku.net/suken/support/past_questions/" target="_blank" rel="noopener">
-    算数検定過去問&ensp;
-  </a>
-  <a href="https://aws.amazon.com/jp/training/?nc2=h_ql_le_tc" target="_blank" rel="noopener">
-    AWS トレーニングと認定&ensp;
-  </a>
-    自分の性欲と向き合うと瞑想できる気がする 2025/07/14　&ensp;　考えついた。一番ひどいこと。ママには、私に頭の良さを遺伝してくれたことを感謝する。　2025/08/01
+    <a href="https://www.tufs.ac.jp/ts/personal/choes/korean/middle/text/kairei1.html" target="_blank" rel="noopener">訓民正音解例</a>&ensp;
+    <a href="https://www.su-gaku.net/suken/support/past_questions/" target="_blank" rel="noopener">算数検定過去問</a>&ensp;
+    <a href="https://aws.amazon.com/jp/training/?nc2=h_ql_le_tc" target="_blank" rel="noopener">AWS トレーニングと認定</a><br>
+    2025/07/14&emsp;自分の性欲と向き合うと瞑想できる気がする<br>
+    2025/08/01,02&emsp;考えついた。一番ひどいこと。ママとパパには、私に頭の良さと、まぁまぁ健康な肉体を遺伝してくれたことを感謝する。<br>　
   </p>
-  
+
   <!-- 日記セクション -->
   <div class="section">
     <div class="container">
-      <div class="diary-area">
-        <h2>日記</h2>
-        <textarea id="diary-input" placeholder="ここに日記を記入" rows="5" style="width:100%;"></textarea>
-        <button id="diary-btn">日記を追加</button>
-      </div>
-      <div class="action-area">
-        <h2>日記記録</h2>
-        <ul id="diary-list"></ul>
-      </div>
+      <h2>日記</h2>
+      <textarea id="diary-input" placeholder="ここに日記を記入" rows="5" style="width:100%;"></textarea>
+      <button id="diary-btn">日記を追加</button>
+      <h2>日記記録</h2>
+      <ul id="diary-list"></ul>
     </div>
   </div>
 
   <!-- 支出記録セクション -->
   <div class="section">
     <div class="container">
-      <div class="expense-area">
-        <h2>支出記録</h2>
-        <input id="expense-amount" type="number" placeholder="金額" style="width:30%; margin-right:8px;">
-        <input id="expense-desc" type="text" placeholder="内容" style="width:60%;">
-        <button id="expense-btn">支出を追加</button>
-      </div>
-      <div class="action-area">
-        <h2>実施記録（支出）</h2>
-        <ul id="expense-list"></ul>
-      </div>
+      <h2>支出記録</h2>
+      <input id="expense-amount" type="number" placeholder="金額" style="width:30%; margin-right:8px;">
+      <input id="expense-desc" type="text" placeholder="内容" style="width:60%;">
+      <button id="expense-btn">支出を追加</button>
+      <h2>実施記録（支出）</h2>
+      <ul id="expense-list"></ul>
     </div>
   </div>
 
   <!-- 算数の勉強セクション -->
   <div class="section">
     <div class="container">
-      <div class="study-area">
-        <h2>算数の勉強</h2>
-        <textarea id="study-input" placeholder="学習内容を自由に記入" rows="4" style="width:100%;"></textarea>
-        <button id="study-btn">記録を追加</button>
-      </div>
-      <div class="action-area">
-        <h2>実施記録（算数）</h2>
-        <ul id="study-list"></ul>
-      </div>
+      <h2>算数の勉強</h2>
+      <textarea id="study-input" placeholder="学習内容を自由に記入" rows="4" style="width:100%;"></textarea>
+      <button id="study-btn">記録を追加</button>
+      <h2>実施記録（算数）</h2>
+      <ul id="study-list"></ul>
     </div>
   </div>
 
   <!-- 動画1セクション -->
   <div class="section">
     <div class="container">
-      <div class="video-area">
-        <button id="play-btn-1">この動画を行う</button><br>
-        <iframe
-          src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1"
-          allow="encrypted-media; picture-in-picture; web-share"
-          allowfullscreen>
-        </iframe>
-      </div>
-      <div class="action-area">
-        <h2>実施記録（動画1）</h2>
-        <ul id="records1"></ul>
-      </div>
+      <button id="play-btn-1">この動画を行う</button><br>
+      <iframe src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+      <h2>実施記録（動画1）</h2>
+      <ul id="records1"></ul>
     </div>
   </div>
 
-  <!-- 共通スクリプト読み込み -->
+  <!-- 共通スクリプト + 洗濯・掃除用JS -->
   <script src="../daily-record.js"></script>
+  <script>
+    function toggle(el) {
+      el.classList.toggle('checked');
+      el.classList.toggle('unchecked');
+    }
+
+    function addLaundryTask() {
+      const container = document.getElementById('laundry-tasks');
+      const row = document.createElement('div');
+      row.className = 'task-row';
+
+      row.innerHTML = `
+        <span class="step checked" onclick="toggle(this)" title="洗濯">🧺</span>
+        <span class="step unchecked" onclick="toggle(this)" title="回収">📥</span>
+        <span class="step unchecked" onclick="toggle(this)" title="干す">🌞</span>
+        <span class="step unchecked" onclick="toggle(this)" title="しまう">📦</span>
+        <button onclick="this.parentElement.remove()">削除</button>
+      `;
+
+      container.appendChild(row);
+    }
+
+    function addCleanupTask() {
+      const container = document.getElementById('cleanup-tasks');
+      const row = document.createElement('div');
+      row.className = 'task-row';
+
+      row.innerHTML = `
+        <input type="text" placeholder="掃除した場所や内容を入力" style="flex:1;">
+        <button onclick="this.parentElement.remove()">削除</button>
+      `;
+
+      container.appendChild(row);
+    }
+  </script>
 </body>
 </html>
