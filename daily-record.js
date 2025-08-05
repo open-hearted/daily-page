@@ -4,6 +4,7 @@
 function toggle(el) {
   el.classList.toggle('checked');
   el.classList.toggle('unchecked');
+  saveTaskWithTimestamp('laundry-tasks');
 }
 
 function addLaundryTask() {
