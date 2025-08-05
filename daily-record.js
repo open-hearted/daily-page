@@ -12,7 +12,7 @@ function addLaundryTask() {
   row.className = 'task-row';
 
   row.innerHTML = `
-    <span class="step checked" onclick="toggle(this)" title="洗濯">🧺</span>
+    <span class="step unchecked" onclick="toggle(this)" title="洗濯">🧺</span>
     <span class="step unchecked" onclick="toggle(this)" title="回収">📥</span>
     <span class="step unchecked" onclick="toggle(this)" title="干す">🌞</span>
     <span class="step unchecked" onclick="toggle(this)" title="しまう">📦</span>
@@ -20,6 +20,9 @@ function addLaundryTask() {
   `;
 
   container.appendChild(row);
+
+  // Save the task with timestamp
+  saveTaskWithTimestamp('laundry-tasks');
 }
 
 function addCleanupTask() {
@@ -33,6 +36,18 @@ function addCleanupTask() {
   `;
 
   container.appendChild(row);
+
+  // Save the task with timestamp
+  saveTaskWithTimestamp('cleanup-tasks');
+}
+
+// Save task with timestamp
+function saveTaskWithTimestamp(taskId) {
+  const now = new Date();
+  const timestamp = `${now.getHours()}:${now.getMinutes()}`;
+  let tasks = JSON.parse(localStorage.getItem(taskId) || '[]');
+  tasks.push({ time: timestamp, task: taskId });
+  localStorage.setItem(taskId, JSON.stringify(tasks));
 }
 
 // =========================
@@ -184,8 +199,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
       const data = {};
+      // Collect all task data from localStorage
       Object.keys(localStorage).forEach(key => {
-        if (key.includes(pageKey)) {
+        if (key.includes('tasks')) { // Ensures we only export task data
           try {
             data[key] = JSON.parse(localStorage.getItem(key));
           } catch {
@@ -199,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const a = document.createElement('a');
       a.href = url;
-      a.download = `storage_${pageKey}.json`;
+      a.download = 'tasks_data.json';
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
