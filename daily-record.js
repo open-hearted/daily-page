@@ -1,148 +1,146 @@
-// =========================
-// UI操作系（トグル・タスク追加）
-// =========================
-function toggle(el) {
-  el.classList.toggle('checked');
-  el.classList.toggle('unchecked');
-  saveTaskWithTimestamp('laundry-tasks');
-}
-
-function addLaundryTask() {
-  const container = document.getElementById('laundry-tasks');
-  const row = document.createElement('div');
-  row.className = 'task-row';
-
-  row.innerHTML = `
-    <span class="step unchecked" onclick="toggle(this)" title="洗濯">🧺</span>
-    <span class="step unchecked" onclick="toggle(this)" title="回収">📥</span>
-    <span class="step unchecked" onclick="toggle(this)" title="干す">🌞</span>
-    <span class="step unchecked" onclick="toggle(this)" title="しまう">📦</span>
-    <button onclick="this.parentElement.remove()">削除</button>
-  `;
-
-  container.appendChild(row);
-
-  // Save the task with timestamp and icon
-  saveTaskWithTimestamp('laundry-tasks');
-}
-
-function addCleanupTask() {
-  const container = document.getElementById('cleanup-tasks');
-  const row = document.createElement('div');
-  row.className = 'task-row';
-
-  row.innerHTML = `
-    <input type="text" placeholder="掃除した場所や内容を入力" style="flex:1;">
-    <button onclick="this.parentElement.remove()">削除</button>
-  `;
-
-  container.appendChild(row);
-
-  // Save the task with timestamp
-  saveTaskWithTimestamp('cleanup-tasks');
-}
-
-// Save task with timestamp
-function saveTaskWithTimestamp(taskId) {
-  const now = new Date();
-  const timestamp = `${now.getHours()}:${now.getMinutes()}`;
-  let tasks = JSON.parse(localStorage.getItem(taskId) || '[]');
-  tasks.push({ time: timestamp, task: taskId });
-  localStorage.setItem(taskId, JSON.stringify(tasks));
-}
-
-// =========================
-// ローカルストレージ + 記録管理
-// =========================
 document.addEventListener('DOMContentLoaded', () => {
-  loadTasksFromStorage();
-  function loadTasksFromStorage() {
-    // Load all sections' tasks from localStorage
-    const laundryTasks = JSON.parse(localStorage.getItem('laundry-tasks') || '[]');
-    const collectTasks = JSON.parse(localStorage.getItem('collect-tasks') || '[]');
-    const cleanupTasks = JSON.parse(localStorage.getItem('cleanup-tasks') || '[]');
-    const diaryRecords = JSON.parse(localStorage.getItem('diary') || '[]');
-    const expenseRecords = JSON.parse(localStorage.getItem('expense') || '[]');
-    const studyRecords = JSON.parse(localStorage.getItem('study') || '[]');
+  const pageKey = document.title;
+  const getKey = type => `${type}_${pageKey}`;
+  const getTime = () => {
+    const now = new Date();
+    return `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  };
 
-    // Render each task with its state (checked or unchecked)
-    renderTaskList('laundry-tasks', laundryTasks);
-    renderTaskList('collect-tasks', collectTasks);
-    renderCleanupTasks(cleanupTasks);
-    renderFreeSection('diary', diaryRecords, '日記');
-    renderFreeSection('expense', expenseRecords, '支出');
-    renderFreeSection('study', studyRecords, '算数の勉強');
-  }
+  // ================= 🧺 Laundry =================
+  const laundryContainer = document.getElementById('laundry-tasks');
+  const addLaundryBtn = document.getElementById('add-laundry');
+  let laundryData = JSON.parse(localStorage.getItem(getKey('laundryStatus')) || '[]');
 
-  function renderTaskList(taskId, tasks) {
-    const container = document.getElementById(taskId);
-    container.innerHTML = '';
-    tasks.forEach((task) => {
+  const renderLaundry = () => {
+    laundryContainer.innerHTML = '';
+    laundryData.forEach((task, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-      row.innerHTML = `
-        <span class="step ${task.state}" onclick="toggle(this)" title="${task.title}">${task.icon}</span>
-        <button onclick="this.parentElement.remove()">削除</button>
-      `;
-      container.appendChild(row);
-    });
-  }
-
-  function renderCleanupTasks(tasks) {
-    const container = document.getElementById('cleanup-tasks');
-    container.innerHTML = '';
-    tasks.forEach((task) => {
-      const row = document.createElement('div');
-      row.className = 'task-row';
-      row.innerHTML = `
-        <input type="text" value="${task.text}" placeholder="掃除した場所や内容を入力" style="flex:1;">
-        <button onclick="this.parentElement.remove()">削除</button>
-      `;
-      container.appendChild(row);
-    });
-  }
-
-  function renderFreeSection(sectionId, records, label) {
-    const container = document.getElementById(sectionId + '-list');
-    container.innerHTML = '';
-    records.forEach((record) => {
-      const row = document.createElement('li');
-      row.innerHTML = `
-        <span>【${record.time}】 ${label}: ${record.text || record.amount}</span>
-        <button onclick="this.parentElement.remove()">削除</button>
-      `;
-      container.appendChild(row);
-    });
-  }
-
-  // =========================
-  // 送信 / エクスポート
-  // =========================
-  const exportBtn = document.getElementById('export-btn');
-  if (exportBtn) {
-    exportBtn.addEventListener('click', () => {
-      const data = {};
-      // Collect all task data and other localStorage items
-      Object.keys(localStorage).forEach(key => {
-        try {
-          data[key] = JSON.parse(localStorage.getItem(key));
-        } catch {
-          data[key] = localStorage.getItem(key);
-        }
+      ['🧺','📥','🌞','📦'].forEach((icon, j) => {
+        const step = task.steps[j];
+        const span = document.createElement('span');
+        span.className = `step ${step.state}`;
+        span.textContent = icon;
+        span.title = `${step.state} @ ${step.time || '未記録'}`;
+        span.onclick = () => {
+          const newState = step.state === 'checked' ? 'unchecked' : 'checked';
+          const newTime = getTime();
+          laundryData[i].steps[j] = { state: newState, time: newTime };
+          localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
+          renderLaundry();
+        };
+        row.appendChild(span);
       });
-
-      // Generate filename based on the HTML file's title
-      const title = document.title.replace(/\s+/g, '_') + '.json';
-      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = title; // Use the HTML file's title for the JSON filename
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      const del = document.createElement('button');
+      del.textContent = '削除';
+      del.onclick = () => {
+        laundryData.splice(i, 1);
+        localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
+        renderLaundry();
+      };
+      row.appendChild(del);
+      laundryContainer.appendChild(row);
     });
-  }
-});
+  };
+
+  addLaundryBtn.onclick = () => {
+    laundryData.push({
+      steps: ['unchecked','unchecked','unchecked','unchecked'].map(state => ({ state, time: null }))
+    });
+    localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
+    renderLaundry();
+  };
+
+  renderLaundry();
+
+  // ================= 🧹 Cleanup =================
+  const cleanupContainer = document.getElementById('cleanup-tasks');
+  const addCleanupBtn = document.getElementById('add-cleanup');
+  let cleanupData = JSON.parse(localStorage.getItem(getKey('cleanup')) || '[]');
+
+  addCleanupBtn.onclick = () => {
+    const text = prompt('掃除内容を入力してください');
+    if (text) {
+      const item = { text, time: getTime() };
+      cleanupData.push(item);
+      localStorage.setItem(getKey('cleanup'), JSON.stringify(cleanupData));
+      renderCleanup();
+    }
+  };
+
+  const renderCleanup = () => {
+    cleanupContainer.innerHTML = '';
+    cleanupData.forEach((item, i) => {
+      const div = document.createElement('div');
+      div.textContent = `${item.text} (${item.time})`;
+      cleanupContainer.appendChild(div);
+    });
+  };
+
+  renderCleanup();
+
+  // ================= 📔 Diary =================
+  const diaryBtn = document.getElementById('diary-btn');
+  const diaryInput = document.getElementById('diary-input');
+  const diaryList = document.getElementById('diary-list');
+  let diaryData = JSON.parse(localStorage.getItem(getKey('diary')) || '[]');
+
+  diaryBtn.onclick = () => {
+    const text = diaryInput.value.trim();
+    if (text) {
+      diaryData.push({ text, time: getTime() });
+      localStorage.setItem(getKey('diary'), JSON.stringify(diaryData));
+      renderDiary();
+      diaryInput.value = '';
+    }
+  };
+
+  const renderDiary = () => {
+    diaryList.innerHTML = '';
+    diaryData.forEach(item => {
+      const li = document.createElement('li');
+      li.textContent = `${item.text} (${item.time})`;
+      diaryList.appendChild(li);
+    });
+  };
+
+  renderDiary();
+
+  // ================= 💰 Expense =================
+  const expenseBtn = document.getElementById('expense-btn');
+  const expenseList = document.getElementById('expense-list');
+  const expenseAmount = document.getElementById('expense-amount');
+  const expenseDesc = document.getElementById('expense-desc');
+  let expenseData = JSON.parse(localStorage.getItem(getKey('expenses')) || '[]');
+
+  expenseBtn.onclick = () => {
+    const amount = expenseAmount.value;
+    const desc = expenseDesc.value.trim();
+    if (amount && desc) {
+      expenseData.push({ amount, desc, time: getTime() });
+      localStorage.setItem(getKey('expenses'), JSON.stringify(expenseData));
+      renderExpenses();
+      expenseAmount.value = '';
+      expenseDesc.value = '';
+    }
+  };
+
+  const renderExpenses = () => {
+    expenseList.innerHTML = '';
+    expenseData.forEach(e => {
+      const li = document.createElement('li');
+      li.textContent = `${e.desc}: ¥${e.amount} (${e.time})`;
+      expenseList.appendChild(li);
+    });
+  };
+
+  renderExpenses();
+
+  // ================= 📈 Study =================
+  const studyBtn = document.getElementById('study-btn');
+  const studyInput = document.getElementById('study-input');
+  const studyList = document.getElementById('study-list');
+  let studyData = JSON.parse(localStorage.getItem(getKey('study')) || '[]');
+
+  studyBtn.onclick = () => {
+    const text = studyInput.value
