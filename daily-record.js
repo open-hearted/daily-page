@@ -21,7 +21,7 @@ function addLaundryTask() {
 
   container.appendChild(row);
 
-  // Save the task with timestamp
+  // Save the task with timestamp and icon
   saveTaskWithTimestamp('laundry-tasks');
 }
 
@@ -56,15 +56,21 @@ function saveTaskWithTimestamp(taskId) {
 document.addEventListener('DOMContentLoaded', () => {
   loadTasksFromStorage();
   function loadTasksFromStorage() {
-    // Load laundry tasks from localStorage
+    // Load all sections' tasks from localStorage
     const laundryTasks = JSON.parse(localStorage.getItem('laundry-tasks') || '[]');
     const collectTasks = JSON.parse(localStorage.getItem('collect-tasks') || '[]');
     const cleanupTasks = JSON.parse(localStorage.getItem('cleanup-tasks') || '[]');
+    const diaryRecords = JSON.parse(localStorage.getItem('diary') || '[]');
+    const expenseRecords = JSON.parse(localStorage.getItem('expense') || '[]');
+    const studyRecords = JSON.parse(localStorage.getItem('study') || '[]');
 
     // Render each task with its state (checked or unchecked)
     renderTaskList('laundry-tasks', laundryTasks);
     renderTaskList('collect-tasks', collectTasks);
     renderCleanupTasks(cleanupTasks);
+    renderFreeSection('diary', diaryRecords, '日記');
+    renderFreeSection('expense', expenseRecords, '支出');
+    renderFreeSection('study', studyRecords, '算数の勉強');
   }
 
   function renderTaskList(taskId, tasks) {
@@ -95,6 +101,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function renderFreeSection(sectionId, records, label) {
+    const container = document.getElementById(sectionId + '-list');
+    container.innerHTML = '';
+    records.forEach((record) => {
+      const row = document.createElement('li');
+      row.innerHTML = `
+        <span>【${record.time}】 ${label}: ${record.text || record.amount}</span>
+        <button onclick="this.parentElement.remove()">削除</button>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  // =========================
+  // 送信 / エクスポート
+  // =========================
   const exportBtn = document.getElementById('export-btn');
   if (exportBtn) {
     exportBtn.addEventListener('click', () => {
