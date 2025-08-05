@@ -51,20 +51,46 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderLaundry();
 
+  // ===== Shared Render with Edit/Delete =====
+  function renderEditableList(data, container, key, fields) {
+    container.innerHTML = '';
+    data.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'task-row';
+      row.textContent = fields.map(f => `${item[f]} (${item.time})`).join(' | ');
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '編集';
+      editBtn.onclick = () => {
+        fields.forEach(f => {
+          const newVal = prompt(`${f}を編集`, item[f]);
+          if (newVal !== null) item[f] = newVal;
+        });
+        localStorage.setItem(getKey(key), JSON.stringify(data));
+        renderers[key]();
+      };
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '削除';
+      delBtn.onclick = () => {
+        data.splice(i, 1);
+        localStorage.setItem(getKey(key), JSON.stringify(data));
+        renderers[key]();
+      };
+
+      row.appendChild(editBtn);
+      row.appendChild(delBtn);
+      container.appendChild(row);
+    });
+  }
+
   // ===== Cleanup =====
   const cleanupContainer = document.getElementById('cleanup-tasks');
   const addCleanupBtn = document.getElementById('add-cleanup');
   let cleanupData = JSON.parse(localStorage.getItem(getKey('cleanup')) || '[]');
-
   function renderCleanup() {
-    cleanupContainer.innerHTML = '';
-    cleanupData.forEach(item => {
-      const div = document.createElement('div');
-      div.textContent = `${item.text} (${item.time})`;
-      cleanupContainer.appendChild(div);
-    });
+    renderEditableList(cleanupData, cleanupContainer, 'cleanup', ['text']);
   }
-
   addCleanupBtn.onclick = () => {
     const text = prompt('掃除内容を入力してください');
     if (text) {
@@ -74,23 +100,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  renderCleanup();
-
   // ===== Diary =====
   const diaryBtn = document.getElementById('diary-btn');
   const diaryInput = document.getElementById('diary-input');
   const diaryList = document.getElementById('diary-list');
   let diaryData = JSON.parse(localStorage.getItem(getKey('diary')) || '[]');
-
   function renderDiary() {
-    diaryList.innerHTML = '';
-    diaryData.forEach(entry => {
-      const li = document.createElement('li');
-      li.textContent = `${entry.text} (${entry.time})`;
-      diaryList.appendChild(li);
-    });
+    renderEditableList(diaryData, diaryList, 'diary', ['text']);
   }
-
   diaryBtn.onclick = () => {
     const text = diaryInput.value.trim();
     if (text) {
@@ -101,24 +118,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  renderDiary();
-
   // ===== Expenses =====
   const expenseBtn = document.getElementById('expense-btn');
   const expenseAmount = document.getElementById('expense-amount');
   const expenseDesc = document.getElementById('expense-desc');
   const expenseList = document.getElementById('expense-list');
   let expenseData = JSON.parse(localStorage.getItem(getKey('expenses')) || '[]');
-
   function renderExpenses() {
-    expenseList.innerHTML = '';
-    expenseData.forEach(item => {
-      const li = document.createElement('li');
-      li.textContent = `${item.desc}: ¥${item.amount} (${item.time})`;
-      expenseList.appendChild(li);
-    });
+    renderEditableList(expenseData, expenseList, 'expenses', ['desc', 'amount']);
   }
-
   expenseBtn.onclick = () => {
     const amount = expenseAmount.value.trim();
     const desc = expenseDesc.value.trim();
@@ -131,23 +139,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  renderExpenses();
-
   // ===== Study =====
   const studyBtn = document.getElementById('study-btn');
   const studyInput = document.getElementById('study-input');
   const studyList = document.getElementById('study-list');
   let studyData = JSON.parse(localStorage.getItem(getKey('study')) || '[]');
-
   function renderStudy() {
-    studyList.innerHTML = '';
-    studyData.forEach(entry => {
-      const li = document.createElement('li');
-      li.textContent = `${entry.text} (${entry.time})`;
-      studyList.appendChild(li);
-    });
+    renderEditableList(studyData, studyList, 'study', ['text']);
   }
-
   studyBtn.onclick = () => {
     const text = studyInput.value.trim();
     if (text) {
@@ -158,9 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  renderStudy();
-
-  // ===== Export All Records =====
+  // ===== Export =====
   const exportBtn = document.getElementById('export-btn');
   exportBtn.onclick = () => {
     const data = {
@@ -171,7 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
       expenses: expenseData,
       study: studyData
     };
-
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
@@ -182,4 +178,18 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
+
+  // ===== Renderer Map =====
+  const renderers = {
+    cleanup: renderCleanup,
+    diary: renderDiary,
+    expenses: renderExpenses,
+    study: renderStudy
+  };
+
+  // ===== Initial Renders =====
+  renderCleanup();
+  renderDiary();
+  renderExpenses();
+  renderStudy();
 });
