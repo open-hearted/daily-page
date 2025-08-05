@@ -1,64 +1,51 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>2025-08-05-00-11 火</title>
-  <link rel="stylesheet" href="../style.css">
-  <style>
-    body { font-family: sans-serif; padding: 1rem; line-height: 1.6; }
-    .icon-button { font-size: 1.5rem; cursor: pointer; margin-right: 0.5rem; }
-    .task-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
-    .step { cursor: pointer; user-select: none; }
-    .checked::after { content: "✅"; margin-left: 0.3rem; }
-    .unchecked::after { content: "⬜"; margin-left: 0.3rem; }
-    .section { margin-top: 2rem; }
-    .container { padding: 0.5rem 0; }
-  </style>
-</head>
-<body>
+document.addEventListener('DOMContentLoaded', () => {
+  // Renders all stored records to the page
+  function renderRecords() {
+    const records = JSON.parse(localStorage.getItem('activityRecords') || '[]');
+    const list = document.getElementById('record-list');
+    list.innerHTML = ''; // Clear previous display
 
-  <div style="text-align:right; margin: 8px;">
-    <button id="export-btn">ローカルストレージを書き出す</button>
-  </div>
+    records.forEach(record => {
+      const item = document.createElement('li');
+      item.textContent = `${record.type} - ${record.timestamp}`;
+      list.appendChild(item);
+    });
+  }
 
-  <div class="section">
-    <button id="add-laundry">🧺</button>
-    <div id="laundry-tasks"></div>
-  </div>
+  // Adds a new record and refreshes the display
+  function addRecord(type) {
+    const timestamp = new Date().toISOString();
+    const record = { type, timestamp };
+    const records = JSON.parse(localStorage.getItem('activityRecords') || '[]');
+    records.push(record);
+    localStorage.setItem('activityRecords', JSON.stringify(records));
+    console.log(`Added ${type} record at ${timestamp}`);
+    renderRecords();
+  }
 
-  <div class="section">
-    <button id="add-cleanup">🧹</button>
-    <div id="cleanup-tasks"></div>
-  </div>
+  // Export data as a downloadable JSON file
+  function exportRecords() {
+    const records = localStorage.getItem("activityRecords") || "[]";
+    const blob = new Blob([records], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
 
-  <div class="section container">
-    <h2>日記</h2>
-    <textarea id="diary-input" placeholder="ここに日記を記入" rows="5" style="width:100%;"></textarea>
-    <button id="diary-btn">日記を追加</button>
-    <ul id="diary-list"></ul>
-  </div>
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "activityRecords.json";
+    link.click();
+    URL.revokeObjectURL(url);
 
-  <div class="section container">
-    <h2>支出記録</h2>
-    <input id="expense-amount" type="number" placeholder="金額" style="width:30%; margin-right:8px;">
-    <input id="expense-desc" type="text" placeholder="内容" style="width:60%;">
-    <button id="expense-btn">支出を追加</button>
-    <ul id="expense-list"></ul>
-  </div>
+    console.log("Exported records.");
+  }
 
-  <div class="section container">
-    <h2>算数の勉強</h2>
-    <textarea id="study-input" placeholder="学習内容を自由に記入" rows="4" style="width:100%;"></textarea>
-    <button id="study-btn">記録を追加</button>
-    <ul id="study-list"></ul>
-  </div>
+  // Attach listeners to each button
+  document.getElementById("add-laundry")?.addEventListener("click", () => addRecord("laundry"));
+  document.getElementById("add-cleanup")?.addEventListener("click", () => addRecord("cleanup"));
+  document.getElementById("diary-btn")?.addEventListener("click", () => addRecord("diary"));
+  document.getElementById("expense-btn")?.addEventListener("click", () => addRecord("expense"));
+  document.getElementById("study-btn")?.addEventListener("click", () => addRecord("study"));
+  document.getElementById("export-btn")?.addEventListener("click", exportRecords);
 
-  <div class="section container">
-    <button id="play-btn-1">この動画を行う</button><br>
-    <iframe src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
-    <ul id="records1"></ul>
-  </div>
-
-  <script src="../daily-record.js"></script>
-</body>
-</html>
+  // Initial render on page load
+  renderRecords();
+});
