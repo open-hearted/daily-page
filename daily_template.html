@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>{date} {weekday}</title>
+  <title>{{date}} {{weekday}}</title>
   <link rel="stylesheet" href="../style.css">
   <style>
     body { font-family: sans-serif; padding: 1rem; line-height: 1.6; }
@@ -57,108 +57,6 @@
     <button id="play-btn-1">この動画を行う</button><br>
     <iframe src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
     <ul id="records1"></ul>
-  </div>
-
-  <script src="../daily-record.js"></script>
-</body>
-</html><!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>{date} {weekday}</title>
-  <link rel="stylesheet" href="../style.css">
-  <style>
-    body {{ font-family: sans-serif; padding: 1rem; line-height: 1.6; }}
-    .icon-button {{
-      font-size: 1.5rem;
-      cursor: pointer;
-      margin-right: 0.5rem;
-    }}
-    .task-row {{
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin-top: 0.5rem;
-    }}
-    .step {{
-      cursor: pointer;
-      user-select: none;
-    }}
-    .checked::after {{
-      content: "✅";
-      margin-left: 0.3rem;
-    }}
-    .unchecked::after {{
-      content: "⬜";
-      margin-left: 0.3rem;
-    }}
-    .section {{ margin-top: 2rem; }}
-    .container {{ padding: 0.5rem 0; }}
-  </style>
-</head>
-<body>
-  <div style="text-align:right; margin: 8px;">
-    <button id="export-btn">ローカルストレージを書き出す</button>
-  </div>
-
-  <div class="section">
-    <button onclick="addLaundryTask()">🧺</button>
-    <div id="laundry-tasks"></div>
-  </div>
-
-  <div class="section">
-    <button onclick="addCleanupTask()">🧹</button>
-    <div id="cleanup-tasks"></div>
-  </div>
-
-  <h1>{date} {weekday}</h1>
-  <p style="white-space: pre-line;">{affirmation}</p>
-  <p>
-    <a href="https://www.tufs.ac.jp/ts/personal/choes/korean/middle/text/kairei1.html" target="_blank" rel="noopener">訓民正音解例</a>&ensp;
-    <a href="https://www.su-gaku.net/suken/support/past_questions/" target="_blank" rel="noopener">算数検定過去問</a>&ensp;
-    <a href="https://aws.amazon.com/jp/training/?nc2=h_ql_le_tc" target="_blank" rel="noopener">AWS トレーニングと認定</a><br>
-    2025/07/14&emsp;自分の性欲と向き合うと瞑想できる気がする<br>
-    2025/08/01,02&emsp;考えついた。一番ひどいこと。ママとパパには、私に頭の良さと、まぁまぁ健康な肉体を遺伝してくれたことを感謝する。<br>　
-  </p>
-
-  <div class="section">
-    <div class="container">
-      <h2>日記</h2>
-      <textarea id="diary-input" placeholder="ここに日記を記入" rows="5" style="width:100%;"></textarea>
-      <button id="diary-btn">日記を追加</button>
-      <h2>日記記録</h2>
-      <ul id="diary-list"></ul>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="container">
-      <h2>支出記録</h2>
-      <input id="expense-amount" type="number" placeholder="金額" style="width:30%; margin-right:8px;">
-      <input id="expense-desc" type="text" placeholder="内容" style="width:60%;">
-      <button id="expense-btn">支出を追加</button>
-      <h2>実施記録（支出）</h2>
-      <ul id="expense-list"></ul>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="container">
-      <h2>算数の勉強</h2>
-      <textarea id="study-input" placeholder="学習内容を自由に記入" rows="4" style="width:100%;"></textarea>
-      <button id="study-btn">記録を追加</button>
-      <h2>実施記録（算数）</h2>
-      <ul id="study-list"></ul>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="container">
-      <button id="play-btn-1">この動画を行う</button><br>
-      <iframe src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
-      <h2>実施記録（動画1）</h2>
-      <ul id="records1"></ul>
-    </div>
   </div>
 
   <script src="../daily-record.js"></script>
