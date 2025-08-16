@@ -2,14 +2,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // 日本時間で24時間表示の時刻取得関数（全体で使う）
   function getJSTTime() {
     const now = new Date();
-    const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000 - now.getTimezoneOffset() * 60 * 1000));
-    const yyyy = jst.getFullYear();
-    const mm = String(jst.getMonth() + 1).padStart(2, '0');
-    const dd = String(jst.getDate()).padStart(2, '0');
-    const hh = String(jst.getHours()).padStart(2, '0');
-    const min = String(jst.getMinutes()).padStart(2, '0');
-    const ss = String(jst.getSeconds()).padStart(2, '0');
-    return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
+    // UTC値を使ってJSTに変換
+    const yyyy = now.getUTCFullYear();
+    const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
+    const dd = String(now.getUTCDate()).padStart(2, '0');
+    const hh = String(now.getUTCHours() + 9).padStart(2, '0');
+    const min = String(now.getUTCMinutes()).padStart(2, '0');
+    const ss = String(now.getUTCSeconds()).padStart(2, '0');
+    // 24時間制で9時以降はそのまま、0〜8時は翌日扱い
+    let jhh = parseInt(hh, 10);
+    let jdd = dd;
+    let jmm = mm;
+    let jyyyy = yyyy;
+    if (jhh >= 24) {
+      jhh -= 24;
+      // 日付を1日進める
+      const dateObj = new Date(Date.UTC(yyyy, now.getUTCMonth(), now.getUTCDate() + 1));
+      jyyyy = dateObj.getUTCFullYear();
+      jmm = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
+      jdd = String(dateObj.getUTCDate()).padStart(2, '0');
+    }
+    return `${jyyyy}/${jmm}/${jdd} ${String(jhh).padStart(2, '0')}:${min}:${ss}`;
   }
   const pageKey = document.title;
   const getTime = () => new Date().toISOString();
