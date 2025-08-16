@@ -1,4 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // 日本時間で24時間表示の時刻取得関数（全体で使う）
+  function getJSTTime() {
+    const now = new Date();
+    const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000 - now.getTimezoneOffset() * 60 * 1000));
+    const yyyy = jst.getFullYear();
+    const mm = String(jst.getMonth() + 1).padStart(2, '0');
+    const dd = String(jst.getDate()).padStart(2, '0');
+    const hh = String(jst.getHours()).padStart(2, '0');
+    const min = String(jst.getMinutes()).padStart(2, '0');
+    const ss = String(jst.getSeconds()).padStart(2, '0');
+    return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
+  }
   const pageKey = document.title;
   const getTime = () => new Date().toISOString();
   const getKey = type => `${type}_${pageKey}`;
@@ -6,6 +18,13 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Laundry =====
   const laundryContainer = document.getElementById('laundry-tasks');
   const addLaundryBtn = document.getElementById('add-laundry');
+  // 入力欄を追加
+  const laundryInput = document.createElement('input');
+  laundryInput.type = 'text';
+  laundryInput.placeholder = '洗濯内容を入力';
+  laundryInput.style = 'margin-right:8px; width:60%';
+  laundryContainer.parentNode.insertBefore(laundryInput, laundryContainer);
+
   let laundryData = JSON.parse(localStorage.getItem(getKey('laundryStatus')) || '[]');
 
   function renderLaundry() {
@@ -13,15 +32,24 @@ document.addEventListener('DOMContentLoaded', () => {
     laundryData.forEach((task, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
+      // 洗濯内容表示（時刻は日本時間の時刻のみ）
+      if (task.text) {
+        const timeOnly = task.time ? task.time.slice(11, 19) : '';
+        const textSpan = document.createElement('span');
+        textSpan.textContent = `${task.text} (${timeOnly})`;
+        row.appendChild(textSpan);
+      }
       ['🧺','📥','🌞','📦'].forEach((icon, j) => {
         const step = task.steps[j];
         const span = document.createElement('span');
         span.className = `step ${step.state}`;
         span.textContent = icon;
-        span.title = `${step.state} @ ${step.time || '未記録'}`;
+        // step.timeはJSTで保存
+        const stepTimeOnly = step.time ? step.time.slice(11, 19) : '未記録';
+        span.title = `${step.state} @ ${stepTimeOnly}`;
         span.onclick = () => {
           const newState = step.state === 'checked' ? 'unchecked' : 'checked';
-          const newTime = getTime();
+          const newTime = getJSTTime();
           laundryData[i].steps[j] = { state: newState, time: newTime };
           localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
           renderLaundry();
@@ -41,12 +69,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   addLaundryBtn.onclick = () => {
-    const newTask = {
-      steps: ['unchecked','unchecked','unchecked','unchecked'].map(state => ({ state, time: null }))
-    };
-    laundryData.push(newTask);
-    localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
-    renderLaundry();
+    // prompt風に入力欄を使う
+    const text = laundryInput.value.trim() || prompt('洗濯内容を入力してください');
+    if (text) {
+      const newTask = {
+        text,
+        time: getJSTTime(),
+        steps: ['unchecked','unchecked','unchecked','unchecked'].map(state => ({ state, time: null }))
+      };
+      laundryData.push(newTask);
+      localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
+      laundryInput.value = '';
+      renderLaundry();
+    }
   };
 
   renderLaundry();
@@ -57,7 +92,9 @@ document.addEventListener('DOMContentLoaded', () => {
     data.forEach((item, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-      row.textContent = fields.map(f => `${item[f]} (${item.time})`).join(' | ');
+      // 時刻は日本時間の時刻のみ表示
+      const timeOnly = item.time ? item.time.slice(11, 19) : '';
+      row.textContent = fields.map(f => `${item[f]} (${timeOnly})`).join(' | ');
 
       const editBtn = document.createElement('button');
       editBtn.textContent = '編集';
@@ -94,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
   addCleanupBtn.onclick = () => {
     const text = prompt('掃除内容を入力してください');
     if (text) {
-      cleanupData.push({ text, time: getTime() });
+      cleanupData.push({ text, time: getJSTTime() });
       localStorage.setItem(getKey('cleanup'), JSON.stringify(cleanupData));
       renderCleanup();
     }
@@ -102,18 +139,64 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== Diary =====
   const diaryBtn = document.getElementById('diary-btn');
+  // 入力欄を削除
   const diaryInput = document.getElementById('diary-input');
-  const diaryList = document.getElementById('diary-list');
+  if (diaryInput) diaryInput.remove();
   let diaryData = JSON.parse(localStorage.getItem(getKey('diary')) || '[]');
-  function renderDiary() {
-    renderEditableList(diaryData, diaryList, 'diary', ['text']);
+  const diaryList = document.getElementById('diary-list');
+
+  // 日本時間で24時間表示の時刻取得関数
+  function getJSTTime() {
+    const now = new Date();
+    // JSTに変換
+    const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000 - now.getTimezoneOffset() * 60 * 1000));
+    const yyyy = jst.getFullYear();
+    const mm = String(jst.getMonth() + 1).padStart(2, '0');
+    const dd = String(jst.getDate()).padStart(2, '0');
+    const hh = String(jst.getHours()).padStart(2, '0');
+    const min = String(jst.getMinutes()).padStart(2, '0');
+    const ss = String(jst.getSeconds()).padStart(2, '0');
+    return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
   }
+
+  function renderDiary() {
+    diaryList.innerHTML = '';
+    diaryData.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'task-row';
+      // 内容と時刻のみ表示
+      const timeOnly = item.time ? item.time.slice(11, 19) : '';
+      row.textContent = `${item.text} (${timeOnly})`;
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '編集';
+      editBtn.onclick = () => {
+        const newText = prompt('日記を編集', item.text);
+        if (newText !== null) item.text = newText;
+        localStorage.setItem(getKey('diary'), JSON.stringify(diaryData));
+        renderDiary();
+      };
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '削除';
+      delBtn.onclick = () => {
+        diaryData.splice(i, 1);
+        localStorage.setItem(getKey('diary'), JSON.stringify(diaryData));
+        renderDiary();
+      };
+
+      row.appendChild(editBtn);
+      row.appendChild(delBtn);
+      diaryList.appendChild(row);
+    });
+  }
+
   diaryBtn.onclick = () => {
-    const text = diaryInput.value.trim();
-    if (text) {
-      diaryData.push({ text, time: getTime() });
+    // 5行分のprompt入力欄
+    const text = prompt('日記を記入（5行まで）', '').replace(/\r?\n/g, '\n');
+    if (text && text.trim()) {
+      diaryData.push({ text, time: getJSTTime() });
       localStorage.setItem(getKey('diary'), JSON.stringify(diaryData));
-      diaryInput.value = '';
       renderDiary();
     }
   };
@@ -131,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const amount = expenseAmount.value.trim();
     const desc = expenseDesc.value.trim();
     if (amount && desc) {
-      expenseData.push({ amount, desc, time: getTime() });
+      expenseData.push({ amount, desc, time: getJSTTime() });
       localStorage.setItem(getKey('expenses'), JSON.stringify(expenseData));
       expenseAmount.value = '';
       expenseDesc.value = '';
@@ -150,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
   studyBtn.onclick = () => {
     const text = studyInput.value.trim();
     if (text) {
-      studyData.push({ text, time: getTime() });
+      studyData.push({ text, time: getJSTTime() });
       localStorage.setItem(getKey('study'), JSON.stringify(studyData));
       studyInput.value = '';
       renderStudy();
