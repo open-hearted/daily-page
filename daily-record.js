@@ -52,6 +52,19 @@ document.addEventListener('DOMContentLoaded', () => {
         textSpan.textContent = `${task.text} (${timeOnly})`;
         row.appendChild(textSpan);
       }
+      // 編集ボタン
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '編集';
+      editBtn.onclick = () => {
+        const newText = prompt('洗濯内容を編集', task.text);
+        if (newText !== null) {
+          laundryData[i].text = newText;
+          localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
+          renderLaundry();
+        }
+      };
+      row.appendChild(editBtn);
+
       ['🧺','📥','🌞','📦'].forEach((icon, j) => {
         const step = task.steps[j];
         const span = document.createElement('span');
