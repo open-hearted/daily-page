@@ -206,15 +206,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const row = document.createElement('div');
       row.className = 'task-row';
       const dateTime = item.time || '';
-      row.textContent = `${item.desc} (${item.amount}) (${dateTime})`;
+      row.textContent = `${item.amount} ${item.desc} (${dateTime})`;
 
       const editBtn = document.createElement('button');
       editBtn.textContent = '編集';
       editBtn.onclick = () => {
-        const newDesc = prompt('内容を編集', item.desc);
-        if (newDesc !== null) item.desc = newDesc;
         const newAmount = prompt('金額を編集', item.amount);
         if (newAmount !== null) item.amount = newAmount;
+        const newDesc = prompt('内容を編集', item.desc);
+        if (newDesc !== null) item.desc = newDesc;
         localStorage.setItem(getKey('expenses'), JSON.stringify(expenseData));
         renderExpenses();
       };
@@ -233,14 +233,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   expenseBtn.onclick = () => {
-    const amount = expenseAmount.value.trim();
-    const desc = expenseDesc.value.trim();
-    if (amount && desc) {
+    const amount = String(expenseAmount.value).trim();
+    const desc = String(expenseDesc.value).trim();
+    if (amount !== '' && desc !== '') {
       expenseData.push({ amount, desc, time: getJSTTime() });
       localStorage.setItem(getKey('expenses'), JSON.stringify(expenseData));
       expenseAmount.value = '';
       expenseDesc.value = '';
       renderExpenses();
+    } else {
+      alert('金額と内容の両方を入力してください');
     }
   };
 
