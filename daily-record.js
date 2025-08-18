@@ -1,15 +1,21 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 日本時間で24時間表示の時刻取得関数（全体で使う）
   function getJSTTime() {
-  // JST（日本標準時）で年月日・時刻を返す
+  // JST（日本標準時）で年月日・時刻を返す（PSTから+17時間）
   const now = new Date();
-  const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
-  const yyyy = jst.getUTCFullYear();
-  const mm = String(jst.getUTCMonth() + 1).padStart(2, '0');
-  const dd = String(jst.getUTCDate()).padStart(2, '0');
-  const hh = String(jst.getUTCHours()).padStart(2, '0');
-  const min = String(jst.getUTCMinutes()).padStart(2, '0');
-  const ss = String(jst.getUTCSeconds()).padStart(2, '0');
+  // 現在のタイムゾーンオフセット（分）
+  const tzOffset = now.getTimezoneOffset();
+  // PSTの場合、tzOffsetは+480（分）
+  // JSTは-540（分）
+  // JSTとの差分（分）
+  const jstDiff = -540 - tzOffset;
+  const jst = new Date(now.getTime() + jstDiff * 60 * 1000);
+  const yyyy = jst.getFullYear();
+  const mm = String(jst.getMonth() + 1).padStart(2, '0');
+  const dd = String(jst.getDate()).padStart(2, '0');
+  const hh = String(jst.getHours()).padStart(2, '0');
+  const min = String(jst.getMinutes()).padStart(2, '0');
+  const ss = String(jst.getSeconds()).padStart(2, '0');
   return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
   }
   const pageKey = document.title;
