@@ -1,28 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 日本時間で24時間表示の時刻取得関数（全体で使う）
   function getJSTTime() {
-    const now = new Date();
-    // UTC値を使ってJSTに変換
-    const yyyy = now.getUTCFullYear();
-    const mm = String(now.getUTCMonth() + 1).padStart(2, '0');
-    const dd = String(now.getUTCDate()).padStart(2, '0');
-    const hh = String(now.getUTCHours() + 9).padStart(2, '0');
-    const min = String(now.getUTCMinutes()).padStart(2, '0');
-    const ss = String(now.getUTCSeconds()).padStart(2, '0');
-    // 24時間制で9時以降はそのまま、0〜8時は翌日扱い
-    let jhh = parseInt(hh, 10);
-    let jdd = dd;
-    let jmm = mm;
-    let jyyyy = yyyy;
-    if (jhh >= 24) {
-      jhh -= 24;
-      // 日付を1日進める
-      const dateObj = new Date(Date.UTC(yyyy, now.getUTCMonth(), now.getUTCDate() + 1));
-      jyyyy = dateObj.getUTCFullYear();
-      jmm = String(dateObj.getUTCMonth() + 1).padStart(2, '0');
-      jdd = String(dateObj.getUTCDate()).padStart(2, '0');
-    }
-    return `${jyyyy}/${jmm}/${jdd} ${String(jhh).padStart(2, '0')}:${min}:${ss}`;
+  // JST（日本標準時）で年月日・時刻を返す
+  const now = new Date();
+  const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  const yyyy = jst.getUTCFullYear();
+  const mm = String(jst.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(jst.getUTCDate()).padStart(2, '0');
+  const hh = String(jst.getUTCHours()).padStart(2, '0');
+  const min = String(jst.getUTCMinutes()).padStart(2, '0');
+  const ss = String(jst.getUTCSeconds()).padStart(2, '0');
+  return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
   }
   const pageKey = document.title;
   const getTime = () => new Date().toISOString();
@@ -47,9 +35,9 @@ document.addEventListener('DOMContentLoaded', () => {
       row.className = 'task-row';
       // 洗濯内容表示（時刻は日本時間の時刻のみ）
       if (task.text) {
-        const timeOnly = task.time ? task.time.slice(11, 19) : '';
+        const dateTime = task.time || '';
         const textSpan = document.createElement('span');
-        textSpan.textContent = `${task.text} (${timeOnly})`;
+        textSpan.textContent = `${task.text} (${dateTime})`;
         row.appendChild(textSpan);
       }
       // 編集ボタン
@@ -118,9 +106,9 @@ document.addEventListener('DOMContentLoaded', () => {
     data.forEach((item, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-      // 時刻は日本時間の時刻のみ表示
-      const timeOnly = item.time ? item.time.slice(11, 19) : '';
-      row.textContent = fields.map(f => `${item[f]} (${timeOnly})`).join(' | ');
+  // 年月日＋時刻（日本時間）表示
+  const dateTime = item.time || '';
+  row.textContent = fields.map(f => `${item[f]} (${dateTime})`).join(' | ');
 
       const editBtn = document.createElement('button');
       editBtn.textContent = '編集';
@@ -190,9 +178,9 @@ document.addEventListener('DOMContentLoaded', () => {
     diaryData.forEach((item, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-      // 内容と時刻のみ表示
-      const timeOnly = item.time ? item.time.slice(11, 19) : '';
-      row.textContent = `${item.text} (${timeOnly})`;
+  // 内容と年月日＋時刻（日本時間）表示
+  const dateTime = item.time || '';
+  row.textContent = `${item.text} (${dateTime})`;
 
       const editBtn = document.createElement('button');
       editBtn.textContent = '編集';
