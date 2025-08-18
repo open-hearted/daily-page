@@ -1,15 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 日本時間で24時間表示の時刻取得関数（全体で使う）
   function getJSTTime() {
-  // UTCに9時間加算したJSTを返す
+  // ローカル時刻をそのまま使う
   const now = new Date();
-  const jst = new Date(now.getTime() + 9 * 60 * 60 * 1000);
-  const yyyy = jst.getUTCFullYear();
-  const mm = String(jst.getUTCMonth() + 1).padStart(2, '0');
-  const dd = String(jst.getUTCDate()).padStart(2, '0');
-  const hh = String(jst.getUTCHours()).padStart(2, '0');
-  const min = String(jst.getUTCMinutes()).padStart(2, '0');
-  const ss = String(jst.getUTCSeconds()).padStart(2, '0');
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  const hh = String(now.getHours()).padStart(2, '0');
+  const min = String(now.getMinutes()).padStart(2, '0');
+  const ss = String(now.getSeconds()).padStart(2, '0');
   return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
   }
   const pageKey = document.title;
