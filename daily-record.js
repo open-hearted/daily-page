@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 日本時間で24時間表示の時刻取得関数（全体で使う）
+  // 日本時間（JST）を常に返す関数（ファイル内で統一）
   function getJSTTime() {
-  // 日本時刻（JST）を文字列で返す
-  return new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
+    return new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
   }
   const pageKey = document.title;
   const getTime = () => new Date().toISOString();
@@ -151,19 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let diaryData = JSON.parse(localStorage.getItem(getKey('diary')) || '[]');
   const diaryList = document.getElementById('diary-list');
 
-  // 日本時間で24時間表示の時刻取得関数
-  function getJSTTime() {
-    const now = new Date();
-    // JSTに変換
-    const jst = new Date(now.getTime() + (9 * 60 * 60 * 1000 - now.getTimezoneOffset() * 60 * 1000));
-    const yyyy = jst.getFullYear();
-    const mm = String(jst.getMonth() + 1).padStart(2, '0');
-    const dd = String(jst.getDate()).padStart(2, '0');
-    const hh = String(jst.getHours()).padStart(2, '0');
-    const min = String(jst.getMinutes()).padStart(2, '0');
-    const ss = String(jst.getSeconds()).padStart(2, '0');
-    return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
-  }
+  // ...existing code...
 
   function renderDiary() {
     diaryList.innerHTML = '';
