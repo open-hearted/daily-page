@@ -1,14 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 日本時間で24時間表示の時刻取得関数（全体で使う）
   function getJSTTime() {
-  // JST（日本標準時）で年月日・時刻を返す（PSTから+17時間）
+  // JST（日本標準時）で年月日・時刻を返す（PSTから+23時間）
   const now = new Date();
   // 現在のタイムゾーンオフセット（分）
   const tzOffset = now.getTimezoneOffset();
-  // PSTの場合、tzOffsetは+480（分）
-  // JSTは-540（分）
-  // JSTとの差分（分）
-  const jstDiff = -540 - tzOffset;
+  // JSTとの差分（分）+6時間分（360分）をさらに加算
+  const jstDiff = -540 - tzOffset + 360;
   const jst = new Date(now.getTime() + jstDiff * 60 * 1000);
   const yyyy = jst.getFullYear();
   const mm = String(jst.getMonth() + 1).padStart(2, '0');
