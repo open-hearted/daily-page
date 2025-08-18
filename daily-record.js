@@ -1,15 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
   // 日本時間で24時間表示の時刻取得関数（全体で使う）
   function getJSTTime() {
-  // ローカル時刻をそのまま使う
-  const now = new Date();
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth() + 1).padStart(2, '0');
-  const dd = String(now.getDate()).padStart(2, '0');
-  const hh = String(now.getHours()).padStart(2, '0');
-  const min = String(now.getMinutes()).padStart(2, '0');
-  const ss = String(now.getSeconds()).padStart(2, '0');
-  return `${yyyy}/${mm}/${dd} ${hh}:${min}:${ss}`;
+  // 日本時刻（JST）を文字列で返す
+  return new Date().toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo' });
   }
   const pageKey = document.title;
   const getTime = () => new Date().toISOString();
