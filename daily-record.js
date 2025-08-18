@@ -201,7 +201,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const expenseList = document.getElementById('expense-list');
   let expenseData = JSON.parse(localStorage.getItem(getKey('expenses')) || '[]');
   function renderExpenses() {
-    renderEditableList(expenseData, expenseList, 'expenses', ['desc', 'amount']);
+    expenseList.innerHTML = '';
+    expenseData.forEach((item, i) => {
+      const row = document.createElement('div');
+      row.className = 'task-row';
+      const dateTime = item.time || '';
+      row.textContent = `${item.desc} (${item.amount}) (${dateTime})`;
+
+      const editBtn = document.createElement('button');
+      editBtn.textContent = '編集';
+      editBtn.onclick = () => {
+        const newDesc = prompt('内容を編集', item.desc);
+        if (newDesc !== null) item.desc = newDesc;
+        const newAmount = prompt('金額を編集', item.amount);
+        if (newAmount !== null) item.amount = newAmount;
+        localStorage.setItem(getKey('expenses'), JSON.stringify(expenseData));
+        renderExpenses();
+      };
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '削除';
+      delBtn.onclick = () => {
+        expenseData.splice(i, 1);
+        localStorage.setItem(getKey('expenses'), JSON.stringify(expenseData));
+        renderExpenses();
+      };
+
+      row.appendChild(editBtn);
+      row.appendChild(delBtn);
+      expenseList.appendChild(row);
+    });
   }
   expenseBtn.onclick = () => {
     const amount = expenseAmount.value.trim();
