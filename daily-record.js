@@ -21,7 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
       row.className = 'task-row';
       // 洗濯内容表示（時刻は日本時間の時刻のみ）
       if (task.text) {
-        const dateTime = task.time || '';
+        let dateTime = task.time || '';
+        // ページ名から日付部分を抽出
+        const pageDate = pageKey.match(/\d{4}-\d{2}-\d{2}/)?.[0];
+        // 記録の日時から日付部分を抽出
+        const recordDate = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0]?.replace(/\//g, '-');
+        // 日付が一致していたら時刻のみ表示
+        if (pageDate && recordDate && pageDate === recordDate) {
+          // 時刻部分のみ抽出
+          const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
+          dateTime = timeOnly;
+        }
         const textSpan = document.createElement('span');
         textSpan.textContent = `${task.text} (${dateTime})`;
         row.appendChild(textSpan);
@@ -91,9 +101,15 @@ document.addEventListener('DOMContentLoaded', () => {
     data.forEach((item, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-  // 年月日＋時刻（日本時間）表示
-  const dateTime = item.time || '';
-  row.textContent = fields.map(f => `${item[f]} (${dateTime})`).join(' | ');
+      // 年月日＋時刻（日本時間）表示
+      let dateTime = item.time || '';
+      const pageDate = pageKey.match(/\d{4}-\d{2}-\d{2}/)?.[0];
+      const recordDate = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0]?.replace(/\//g, '-');
+      if (pageDate && recordDate && pageDate === recordDate) {
+        const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
+        dateTime = timeOnly;
+      }
+      row.textContent = fields.map(f => `${item[f]} (${dateTime})`).join(' | ');
 
       const editBtn = document.createElement('button');
       editBtn.textContent = '編集';
@@ -151,9 +167,15 @@ document.addEventListener('DOMContentLoaded', () => {
     diaryData.forEach((item, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-  // 内容と年月日＋時刻（日本時間）表示
-  const dateTime = item.time || '';
-  row.textContent = `${item.text} (${dateTime})`;
+      // 内容と年月日＋時刻（日本時間）表示
+      let dateTime = item.time || '';
+      const pageDate = pageKey.match(/\d{4}-\d{2}-\d{2}/)?.[0];
+      const recordDate = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0]?.replace(/\//g, '-');
+      if (pageDate && recordDate && pageDate === recordDate) {
+        const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
+        dateTime = timeOnly;
+      }
+      row.textContent = `${item.text} (${dateTime})`;
 
       const editBtn = document.createElement('button');
       editBtn.textContent = '編集';
