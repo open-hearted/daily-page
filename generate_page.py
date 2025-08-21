@@ -70,15 +70,19 @@ year = entries[0][:4] if entries else now.strftime('%Y')
 for m in range(1, 13):
     month_key = f"{year}-{m:02d}"
     links_lines.append(f'    <div class="month-col">')
-    links_lines.append(f'      <h3>{month_key}</h3>')
+    # 月見出しは 'M月' のみ
+    links_lines.append(f'      <h3>{m}月</h3>')
     links_lines.append(f'      <ul>')
     for base, fn in grouped.get(month_key, []):
-        links_lines.append(f'        <li><a href="logs/{fn}">{base}</a></li>')
+        # リンクテキストは月日部分（MM-DD）のみ
+        display_date = base[5:10]
+        links_lines.append(f'        <li><a href="logs/{fn}">{display_date}</a></li>')
     links_lines.append(f'      </ul>')
     links_lines.append(f'    </div>')
 
 links = "\n".join(links_lines)
-index_html = index_tpl.replace('{links}', links)
+# テンプレートの {links} と {year} を置換
+index_html = index_tpl.replace('{links}', links).replace('{year}', year)
 with open(INDEX_OUTPUT, "w", encoding="utf-8") as f:
     f.write(index_html)
-print(f"Updated {INDEX_OUTPUT} with {len(entries)} entries")
+print(f"Updated {INDEX_OUTPUT} with {len(entries)} entries for {year}")
