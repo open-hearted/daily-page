@@ -78,7 +78,7 @@ for m in range(1, 13):
     links_lines.append(f'    </div>')
 
 links = "\n".join(links_lines)
-index_html = index_tpl.format(links=links)
+index_html = index_tpl.replace('{links}', links)
 with open(INDEX_OUTPUT, "w", encoding="utf-8") as f:
     f.write(index_html)
 print(f"Updated {INDEX_OUTPUT} with {len(entries)} entries")
