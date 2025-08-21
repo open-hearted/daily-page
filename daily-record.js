@@ -7,6 +7,66 @@ document.addEventListener('DOMContentLoaded', () => {
   const getTime = () => new Date().toISOString();
   const getKey = type => `${type}_${pageKey}`;
 
+    // ===== Shower =====
+    const showerContainer = document.getElementById('shower-tasks');
+    const addShowerBtn = document.getElementById('add-shower');
+    let showerData = JSON.parse(localStorage.getItem(getKey('shower')) || '[]');
+
+    function renderShower() {
+      showerContainer.innerHTML = '';
+      showerData.forEach((item, i) => {
+        const row = document.createElement('div');
+        row.className = 'task-row';
+        let dateTime = item.time || '';
+        const pageDate = pageKey.match(/(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}/)?.[1];
+        const recordDateRaw = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0];
+        let recordDate = '';
+        if (recordDateRaw) {
+          const parts = recordDateRaw.split('/');
+          recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
+        }
+        if (pageDate && recordDate && pageDate === recordDate) {
+          const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
+          dateTime = timeOnly;
+        }
+        row.textContent = `${item.text ?? ''} (${dateTime})`;
+
+        const editBtn = document.createElement('button');
+        editBtn.textContent = '編集';
+        editBtn.onclick = () => {
+          const newText = prompt('シャワー内容を編集', item.text ?? '');
+          if (newText !== null) {
+            showerData[i].text = newText;
+            localStorage.setItem(getKey('shower'), JSON.stringify(showerData));
+            renderShower();
+          }
+        };
+        row.appendChild(editBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.textContent = '削除';
+        delBtn.onclick = () => {
+          showerData.splice(i, 1);
+          localStorage.setItem(getKey('shower'), JSON.stringify(showerData));
+          renderShower();
+        };
+        row.appendChild(delBtn);
+        showerContainer.appendChild(row);
+      });
+    }
+
+    addShowerBtn.onclick = () => {
+      const text = prompt('シャワー内容を入力してください（空欄可）');
+      // 空欄でも記録可能
+      if (text !== null) {
+        showerData.push({ text: text, time: getJSTTime() });
+        localStorage.setItem(getKey('shower'), JSON.stringify(showerData));
+        renderShower();
+      }
+    };
+
+    renderShower();
+
   // ===== Laundry =====
   const laundryContainer = document.getElementById('laundry-tasks');
   const addLaundryBtn = document.getElementById('add-laundry');
@@ -324,7 +384,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cleanup: renderCleanup,
     diary: renderDiary,
     expenses: renderExpenses,
-    study: renderStudy
+    study: renderStudy,
+    shower: renderShower
   };
 
   // ===== Initial Renders =====
@@ -332,4 +393,5 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDiary();
   renderExpenses();
   renderStudy();
+  renderShower();
 });
