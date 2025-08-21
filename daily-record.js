@@ -10,12 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Laundry =====
   const laundryContainer = document.getElementById('laundry-tasks');
   const addLaundryBtn = document.getElementById('add-laundry');
-  // 入力欄を追加
-  const laundryInput = document.createElement('input');
-  laundryInput.type = 'text';
-  laundryInput.placeholder = '洗濯内容を入力';
-  laundryInput.style = 'margin-right:8px; width:60%';
-  laundryContainer.parentNode.insertBefore(laundryInput, laundryContainer);
+  // 入力欄（テキストボックス）は削除。プロンプト入力のみ。
 
   let laundryData = JSON.parse(localStorage.getItem(getKey('laundryStatus')) || '[]');
 
