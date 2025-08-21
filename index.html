@@ -4,6 +4,13 @@
   <meta charset="UTF-8">
   <title>Daily Pages</title>
   <link rel="stylesheet" href="style.css">
+    <style>
+      ul.links-columns { column-count: 3; column-gap: 1.5rem; list-style: none; padding: 0; margin: 0; }
+      ul.links-columns li { break-inside: avoid; margin-bottom: 0.5rem; }
+      ul.links-columns li strong { display: block; margin-top: 0.75rem; }
+      @media (max-width: 900px) { ul.links-columns { column-count: 2; } }
+      @media (max-width: 480px) { ul.links-columns { column-count: 1; } }
+    </style>
 </head>
 <body>
   <h1>Daily Pages</h1>
@@ -88,6 +95,6 @@
   <li><a href="logs/2025-08-19-00-11.html">2025-08-19-00-11</a></li>
   <li><a href="logs/2025-08-20-00-10.html">2025-08-20-00-10</a></li>
   <li><a href="logs/2025-08-21-00-10.html">2025-08-21-00-10</a></li>
-  </ul>
+  <ul class="links-columns">
 </body>
-</html>
+  </ul>

@@ -4,11 +4,30 @@
   <meta charset="UTF-8">
   <title>Daily Pages</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* 12列グリッド: 各列が月（1..12）を表す */
+    .months-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
+      align-items: start;
+      margin: 0;
+      padding: 0 0.5rem;
+    }
+    .month-col { list-style: none; padding: 0; margin: 0; }
+    .month-col h3 { margin: 0 0 0.5rem 0; font-size: 0.9rem; }
+    .month-col ul { padding: 0; margin: 0; list-style: none; }
+    .month-col li { margin-bottom: 0.4rem; }
+    @media (max-width: 1200px) { .months-grid { grid-template-columns: repeat(6, 1fr); } }
+    @media (max-width: 900px) { .months-grid { grid-template-columns: repeat(4, 1fr); } }
+    @media (max-width: 640px) { .months-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 420px) { .months-grid { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
   <h1>Daily Pages</h1>
-  <ul>
+  <div class="months-grid">
 {links}
-  </ul>
+  </div>
 </body>
 </html>

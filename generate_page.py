@@ -54,17 +54,29 @@ print(f"Generated {daily_path}")
 # --- index.html を生成／更新 ---
 # logs/*.html をリストアップして月毎にグルーピングしてリンク文字列を作成
 entries = sorted(fn for fn in os.listdir(LOG_DIR) if fn.endswith(".html"))
-links_lines = []
-last_month = None
+
+# 年と月をキーにしてファイルをグループ化（キー: 'YYYY-MM'）
+from collections import defaultdict
+grouped = defaultdict(list)
 for fn in entries:
-    base = fn[:-5]  # ファイル名から拡張子を除いた表示用文字列
-    # 'YYYY-MM' を月キーとして取得（例: '2025-08'）
-    month = base[:7]
-    if month != last_month:
-        # 月が変わったら見出しを挿入
-        links_lines.append(f'    <li><strong>{month}</strong></li>')
-        last_month = month
-    links_lines.append(f'    <li><a href="logs/{fn}">{base}</a></li>')
+    base = fn[:-5]
+    # 期待されるフォーマットは 'YYYY-MM' が先頭にあること
+    key = base[:7]
+    grouped[key].append((base, fn))
+
+# 生成する HTML: 12カラム（1月..12月）。
+links_lines = []
+year = entries[0][:4] if entries else now.strftime('%Y')
+for m in range(1, 13):
+    month_key = f"{year}-{m:02d}"
+    links_lines.append(f'    <div class="month-col">')
+    links_lines.append(f'      <h3>{month_key}</h3>')
+    links_lines.append(f'      <ul>')
+    for base, fn in grouped.get(month_key, []):
+        links_lines.append(f'        <li><a href="logs/{fn}">{base}</a></li>')
+    links_lines.append(f'      </ul>')
+    links_lines.append(f'    </div>')
+
 links = "\n".join(links_lines)
 index_html = index_tpl.format(links=links)
 with open(INDEX_OUTPUT, "w", encoding="utf-8") as f:
