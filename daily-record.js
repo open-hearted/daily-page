@@ -22,13 +22,17 @@ document.addEventListener('DOMContentLoaded', () => {
       // 洗濯内容表示（時刻は日本時間の時刻のみ）
       if (task.text) {
         let dateTime = task.time || '';
-        // ページ名から日付部分を抽出
-        const pageDate = pageKey.match(/\d{4}-\d{2}-\d{2}/)?.[0];
-        // 記録の日時から日付部分を抽出
-        const recordDate = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0]?.replace(/\//g, '-');
+  // ページ名から日付部分（YYYY-MM-DD）を抽出
+  const pageDate = pageKey.match(/(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}/)?.[1];
+        // 記録の日時から日付部分を抽出（YYYY-MM-DD形式に変換）
+        const recordDateRaw = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0];
+        let recordDate = '';
+        if (recordDateRaw) {
+          const parts = recordDateRaw.split('/');
+          recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
+        }
         // 日付が一致していたら時刻のみ表示
         if (pageDate && recordDate && pageDate === recordDate) {
-          // 時刻部分のみ抽出
           const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
           dateTime = timeOnly;
         }
@@ -103,8 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
       row.className = 'task-row';
       // 年月日＋時刻（日本時間）表示
       let dateTime = item.time || '';
-      const pageDate = pageKey.match(/\d{4}-\d{2}-\d{2}/)?.[0];
-      const recordDate = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0]?.replace(/\//g, '-');
+  const pageDate = pageKey.match(/(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}/)?.[1];
+      const recordDateRaw = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0];
+      let recordDate = '';
+      if (recordDateRaw) {
+        const parts = recordDateRaw.split('/');
+        recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
+      }
       if (pageDate && recordDate && pageDate === recordDate) {
         const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
         dateTime = timeOnly;
@@ -169,8 +178,13 @@ document.addEventListener('DOMContentLoaded', () => {
       row.className = 'task-row';
       // 内容と年月日＋時刻（日本時間）表示
       let dateTime = item.time || '';
-      const pageDate = pageKey.match(/\d{4}-\d{2}-\d{2}/)?.[0];
-      const recordDate = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0]?.replace(/\//g, '-');
+  const pageDate = pageKey.match(/(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}/)?.[1];
+      const recordDateRaw = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0];
+      let recordDate = '';
+      if (recordDateRaw) {
+        const parts = recordDateRaw.split('/');
+        recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
+      }
       if (pageDate && recordDate && pageDate === recordDate) {
         const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
         dateTime = timeOnly;
