@@ -33,7 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // 日付が一致していたら時刻のみ表示
         if (pageDate && recordDate && pageDate === recordDate) {
-          const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
+          // HH:mmのみ抽出（先頭のHH:mm:SSからHH:mmのみ）
+          const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
           dateTime = timeOnly;
         }
         const textSpan = document.createElement('span');
@@ -115,7 +116,8 @@ document.addEventListener('DOMContentLoaded', () => {
         recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
       }
       if (pageDate && recordDate && pageDate === recordDate) {
-        const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
+        // HH:mmのみ抽出（先頭のHH:mm:SSからHH:mmのみ）
+        const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
         dateTime = timeOnly;
       }
       row.textContent = fields.map(f => `${item[f]} (${dateTime})`).join(' | ');
@@ -186,7 +188,8 @@ document.addEventListener('DOMContentLoaded', () => {
         recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
       }
       if (pageDate && recordDate && pageDate === recordDate) {
-        const timeOnly = dateTime.match(/\d{2}:\d{2}:\d{2}/)?.[0] || '';
+        // HH:mmのみ抽出（先頭のHH:mm:SSからHH:mmのみ）
+        const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
         dateTime = timeOnly;
       }
       row.textContent = `${item.text} (${dateTime})`;
