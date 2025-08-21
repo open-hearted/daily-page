@@ -52,12 +52,20 @@ with open(daily_path, "w", encoding="utf-8") as f:
 print(f"Generated {daily_path}")
 
 # --- index.html を生成／更新 ---
-# logs/*.html をリストアップしてリンク文字列を作成
+# logs/*.html をリストアップして月毎にグルーピングしてリンク文字列を作成
 entries = sorted(fn for fn in os.listdir(LOG_DIR) if fn.endswith(".html"))
-links = "\n".join(
-    f'    <li><a href="logs/{fn}">{fn[:-5]}</a></li>'
-    for fn in entries
-)
+links_lines = []
+last_month = None
+for fn in entries:
+    base = fn[:-5]  # ファイル名から拡張子を除いた表示用文字列
+    # 'YYYY-MM' を月キーとして取得（例: '2025-08'）
+    month = base[:7]
+    if month != last_month:
+        # 月が変わったら見出しを挿入
+        links_lines.append(f'    <li><strong>{month}</strong></li>')
+        last_month = month
+    links_lines.append(f'    <li><a href="logs/{fn}">{base}</a></li>')
+links = "\n".join(links_lines)
 index_html = index_tpl.format(links=links)
 with open(INDEX_OUTPUT, "w", encoding="utf-8") as f:
     f.write(index_html)
