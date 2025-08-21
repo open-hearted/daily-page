@@ -74,17 +74,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   addLaundryBtn.onclick = () => {
-    // prompt風に入力欄を使う
-    const text = laundryInput.value.trim() || prompt('洗濯内容を入力してください');
-    if (text) {
+    // プロンプトで内容を入力
+    const text = prompt('洗濯内容を入力してください');
+    if (text && text.trim()) {
       const newTask = {
-        text,
+        text: text.trim(),
         time: getJSTTime(),
         steps: ['unchecked','unchecked','unchecked','unchecked'].map(state => ({ state, time: null }))
       };
       laundryData.push(newTask);
       localStorage.setItem(getKey('laundryStatus'), JSON.stringify(laundryData));
-      laundryInput.value = '';
       renderLaundry();
     }
   };
