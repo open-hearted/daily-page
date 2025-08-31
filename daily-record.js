@@ -248,9 +248,13 @@ document.addEventListener('DOMContentLoaded', () => {
         recordDate = `${recordDateRaw[1]}-${recordDateRaw[2].padStart(2,'0')}-${recordDateRaw[3].padStart(2,'0')}`;
       }
       if (pageDate && recordDate && pageDate === recordDate) {
-        // HH:mmのみ抽出（例: '2025/08/31 00:07:00' → '00:07'）
-        const timeOnly = dateTime.match(/\s(\d{2}:\d{2})/)?.[1] || '';
-        dateTime = timeOnly;
+        // HH:mmのみ抽出（例: '2025/8/31 0:07:00' や '2025/08/31 00:07:00' → '00:07'）
+        const timeMatch = dateTime.match(/(\d{1,2}):(\d{2}):\d{2}/);
+        if (timeMatch) {
+          const hour = timeMatch[1].padStart(2, '0');
+          const minute = timeMatch[2];
+          dateTime = `${hour}:${minute}`;
+        }
       }
       row.textContent = `${item.text} (${dateTime})`;
 
