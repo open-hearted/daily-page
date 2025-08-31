@@ -26,8 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
           recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
         }
         if (pageDate && recordDate && pageDate === recordDate) {
-          const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
-          dateTime = timeOnly;
+          // HH:mmのみ抽出（例: '2025/8/31 0:07:00' や '2025/08/31 00:07:00' → '00:07'）
+          const timeMatch = dateTime.match(/(\d{1,2}):(\d{2}):\d{2}/);
+          if (timeMatch) {
+            const hour = timeMatch[1].padStart(2, '0');
+            const minute = timeMatch[2];
+            dateTime = `${hour}:${minute}`;
+          }
         }
         row.textContent = `${item.text ?? ''} (${dateTime})`;
 
@@ -93,9 +98,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // 日付が一致していたら時刻のみ表示
         if (pageDate && recordDate && pageDate === recordDate) {
-          // HH:mmのみ抽出（先頭のHH:mm:SSからHH:mmのみ）
-          const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
-          dateTime = timeOnly;
+          // HH:mmのみ抽出（例: '2025/8/31 0:07:00' や '2025/08/31 00:07:00' → '00:07'）
+          const timeMatch = dateTime.match(/(\d{1,2}):(\d{2}):\d{2}/);
+          if (timeMatch) {
+            const hour = timeMatch[1].padStart(2, '0');
+            const minute = timeMatch[2];
+            dateTime = `${hour}:${minute}`;
+          }
         }
         const textSpan = document.createElement('span');
         textSpan.textContent = `${task.text} (${dateTime})`;
@@ -176,9 +185,13 @@ document.addEventListener('DOMContentLoaded', () => {
         recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
       }
       if (pageDate && recordDate && pageDate === recordDate) {
-        // HH:mmのみ抽出（先頭のHH:mm:SSからHH:mmのみ）
-        const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
-        dateTime = timeOnly;
+        // HH:mmのみ抽出（例: '2025/8/31 0:07:00' や '2025/08/31 00:07:00' → '00:07'）
+        const timeMatch = dateTime.match(/(\d{1,2}):(\d{2}):\d{2}/);
+        if (timeMatch) {
+          const hour = timeMatch[1].padStart(2, '0');
+          const minute = timeMatch[2];
+          dateTime = `${hour}:${minute}`;
+        }
       }
       row.textContent = fields.map(f => `${item[f]} (${dateTime})`).join(' | ');
 
@@ -302,7 +315,24 @@ document.addEventListener('DOMContentLoaded', () => {
     expenseData.forEach((item, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-      const dateTime = item.time || '';
+      let dateTime = item.time || '';
+      // ページ名から日付部分（YYYY-MM-DD）を抽出
+      const pageDate = pageKey.match(/(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}/)?.[1];
+      // 記録の日時から日付部分を抽出（YYYY-MM-DD形式に変換）
+      const recordDateRaw = dateTime.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+      let recordDate = '';
+      if (recordDateRaw) {
+        recordDate = `${recordDateRaw[1]}-${recordDateRaw[2].padStart(2,'0')}-${recordDateRaw[3].padStart(2,'0')}`;
+      }
+      if (pageDate && recordDate && pageDate === recordDate) {
+        // HH:mmのみ抽出（例: '2025/8/31 0:07:00' や '2025/08/31 00:07:00' → '00:07'）
+        const timeMatch = dateTime.match(/(\d{1,2}):(\d{2}):\d{2}/);
+        if (timeMatch) {
+          const hour = timeMatch[1].padStart(2, '0');
+          const minute = timeMatch[2];
+          dateTime = `${hour}:${minute}`;
+        }
+      }
       row.textContent = `${item.amount} ${item.desc} (${dateTime})`;
 
       const editBtn = document.createElement('button');
