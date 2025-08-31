@@ -238,18 +238,18 @@ document.addEventListener('DOMContentLoaded', () => {
     diaryData.forEach((item, i) => {
       const row = document.createElement('div');
       row.className = 'task-row';
-      // 内容と年月日＋時刻（日本時間）表示
       let dateTime = item.time || '';
-  const pageDate = pageKey.match(/(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}/)?.[1];
-      const recordDateRaw = dateTime.match(/\d{4}\/\d{1,2}\/\d{1,2}/)?.[0];
+      // ページ名から日付部分（YYYY-MM-DD）を抽出
+      const pageDate = pageKey.match(/(\d{4}-\d{2}-\d{2})-\d{2}-\d{2}/)?.[1];
+      // 記録の日時から日付部分を抽出（YYYY-MM-DD形式に変換）
+      const recordDateRaw = dateTime.match(/(\d{4})\/(\d{1,2})\/(\d{1,2})/);
       let recordDate = '';
       if (recordDateRaw) {
-        const parts = recordDateRaw.split('/');
-        recordDate = `${parts[0]}-${parts[1].padStart(2,'0')}-${parts[2].padStart(2,'0')}`;
+        recordDate = `${recordDateRaw[1]}-${recordDateRaw[2].padStart(2,'0')}-${recordDateRaw[3].padStart(2,'0')}`;
       }
       if (pageDate && recordDate && pageDate === recordDate) {
-        // HH:mmのみ抽出（先頭のHH:mm:SSからHH:mmのみ）
-        const timeOnly = dateTime.match(/(\d{2}:\d{2}):\d{2}/)?.[1] || dateTime.match(/\d{2}:\d{2}/)?.[0] || '';
+        // HH:mmのみ抽出（例: '2025/08/31 00:07:00' → '00:07'）
+        const timeOnly = dateTime.match(/\s(\d{2}:\d{2})/)?.[1] || '';
         dateTime = timeOnly;
       }
       row.textContent = `${item.text} (${dateTime})`;
