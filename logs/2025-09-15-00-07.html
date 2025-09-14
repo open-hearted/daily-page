@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>2025-09-15-00-07 月</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body { font-family: sans-serif; padding: 1rem; line-height: 1.6; }
+    .icon-button { font-size: 1.5rem; cursor: pointer; margin-right: 0.5rem; }
+    .task-row { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+    .step { cursor: pointer; user-select: none; }
+    .checked::after { content: "✅"; margin-left: 0.3rem; }
+    .unchecked::after { content: "⬜"; margin-left: 0.3rem; }
+    .section { margin-top: 2rem; }
+    .container { padding: 0.5rem 0; }
+  </style>
+</head>
+<body>
+
+  <div style="text-align:right; margin: 8px;">
+    <button id="export-btn">ローカルストレージを書き出す</button>
+  </div>
+
+  <h1>2025-09-15-00-07 月</h1>
+  <p style="white-space: pre-line;">懺悔誓願の文
+懺悔いたします。
+無明の闇におおわれて、身、口、意、の三業によっておかしてしまったあやまちがあります。
+仏、法、僧、に対するあやまち、恩師に対するあやまち、生きとし生けるものに対するあやまち。
+これ等いっさいのあやまちを懺悔いたします。
+また、自分が受けた他の人々のあやまちも許します。
+この様に雑事を離れ、独り静かに自己の心身を念をもって観つめるとき、瞬間、瞬間、変化生滅しつづける現象をヴィパッサナーによって洞察し、真の幸福を得て、解脱の道へ導かれますようにと、ここに誓願をいたします。
+
+
+今日も一歩前へ進もう  片付けよう
+6/10 導かれて、自分が書いた「〇ガチで自助努力する」を見つけた 
+マーティンセリグマンAIでも、近い回答が出た。6/19にもこの文言に偶然辿り着いた。
+Natalie Dawsonともシンクロしてる。9日間忘れてた。
+
+「離散家族をさがします」KBS 6/20
+</p>
+  <p>
+    <a href="https://www.tufs.ac.jp/ts/personal/choes/korean/middle/text/kairei1.html" target="_blank" rel="noopener">訓民正音解例</a>&ensp;
+    <a href="https://www.su-gaku.net/suken/support/past_questions/" target="_blank" rel="noopener">算数検定過去問</a>&ensp;
+    <a href="https://aws.amazon.com/jp/training/?nc2=h_ql_le_tc" target="_blank" rel="noopener">AWS トレーニングと認定</a><br>
+    2025/07/14&emsp;自分の性欲と向き合うと瞑想できる気がする<br>
+    2025/08/01,02&emsp;考えついた。一番ひどいこと。ママとパパには、私に頭の良さと、まぁまぁ健康な肉体を遺伝してくれたことを感謝する。<br>　
+  </p>
+
+
+  <div class="section">
+    <button id="add-laundry">🧺</button>
+    <div id="laundry-tasks"></div>
+  </div>
+
+  <div class="section">
+    <button id="add-shower">🚿</button>
+    <div id="shower-tasks"></div>
+  </div>
+
+  <div class="section">
+    <button id="add-cleanup">🧹</button>
+    <div id="cleanup-tasks"></div>
+  </div>
+
+  <div class="section container">
+    <h2>日記</h2>
+    <textarea id="diary-input" placeholder="ここに日記を記入" rows="5" style="width:100%;"></textarea>
+    <button id="diary-btn">日記を追加</button>
+    <ul id="diary-list"></ul>
+  </div>
+
+  <div class="section container">
+    <h2>支出記録</h2>
+    <input id="expense-amount" type="number" placeholder="金額" style="width:30%; margin-right:8px;">
+    <input id="expense-desc" type="text" placeholder="内容" style="width:60%;">
+    <button id="expense-btn">支出を追加</button>
+    <ul id="expense-list"></ul>
+  </div>
+
+  <div class="section container">
+    <h2>算数の勉強</h2>
+    <textarea id="study-input" placeholder="学習内容を自由に記入" rows="4" style="width:100%;"></textarea>
+    <button id="study-btn">記録を追加</button>
+    <ul id="study-list"></ul>
+  </div>
+
+  <div class="section container">
+    <button id="play-btn-1">この動画を行う</button><br>
+    <iframe src="https://www.youtube.com/embed/nbm-G5i-NJk?mute=1" allow="encrypted-media; picture-in-picture; web-share" allowfullscreen></iframe>
+    <ul id="records1"></ul>
+  </div>
+
+  <script src="../daily-record.js"></script>
+</body>
+</html>
