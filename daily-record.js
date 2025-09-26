@@ -244,8 +244,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let diaryData = JSON.parse(localStorage.getItem(getKey('diary')) || '[]');
   const diaryList = document.getElementById('diary-list');
 
-  // ...existing code...
-
   function renderDiary() {
     diaryList.innerHTML = '';
     diaryData.forEach((item, i) => {
@@ -428,4 +426,9 @@ document.addEventListener('DOMContentLoaded', () => {
   renderExpenses();
   renderStudy();
   renderShower();
+
+// 料理カテゴリ（掃除と同じロジックで登録）
+const COOKING_STEPS = ['献立', '買い出し', '下準備', '調理', '配膳', '片付け'];
+// registerTaskButton(ボタンID, コンテナID, ステップ配列, ストレージキー/カテゴリ名)
+registerTaskButton('add-cooking', 'cooking-tasks', COOKING_STEPS, 'cooking');
 });
