@@ -313,7 +313,7 @@ document.addEventListener('DOMContentLoaded', () => {
   diaryBtn.onclick = () => {
     const input = prompt('日記を記入（5行まで）', '');
     if (input !== null) {
-      const text = String(input).replace(/\r?\n/g, '\n').trim();
+      const text = input.replace(/\r?\n/g, '\n').trim();
       if (text) {
         diaryData.push({ text, time: getJSTTime() });
         localStorage.setItem(getKey('diary'), JSON.stringify(diaryData));
@@ -409,32 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ===== Affirmation (ローカルストレージから読み込み・未登録なら初期化) =====
-  function initAffirmation() {
-    const el = document.getElementById('affirmation');
-    if (!el) return;
-    const key = 'affirmationText';
-    let text = localStorage.getItem(key);
-    if (!text) {
-      text = `懺悔誓願の文
-懺悔いたします。
-無明の闇におおわれて、身、口、意、の三業によっておかしてしまったあやまちがあります。
-仏、法、僧、に対するあやまち、恩師に対するあやまち、生きとし生けるものに対するあやまち。
-これ等いっさいのあやまちを懺悔いたします。
-また、自分が受けた他の人々のあやまちも許します。
-この様に雑事を離れ、独り静かに自己の心身を念をもって観つめるとき、瞬間、瞬間、変化生滅しつづける現象をヴィパッサナーによって洞察し、真の幸福を得て、解脱の道へ導かれますようにと、ここに誓願をいたします。
-
-今日も一歩前へ進もう  片付けよう
-6/10 導かれて、自分が書いた「〇ガチで自助努力する」を見つけた 
-マーティンセリグマンAIでも、近い回答が出た。6/19にもこの文言に偶然辿り着いた。
-Natalie Dawsonともシンクロしてる。9日間忘れてた。
-
-「離散家族をさがします」KBS 6/20`;
-      localStorage.setItem(key, text);
-    }
-    el.textContent = text;
-  }
-
   // ===== Export =====
   const exportBtn = document.getElementById('export-btn');
   exportBtn.onclick = () => {
@@ -446,7 +420,7 @@ Natalie Dawsonともシンクロしてる。9日間忘れてた。
       diary: diaryData,
       expenses: expenseData,
       study: studyData,
-      shower: showerData
+      shower: showerData   // 追加
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -470,9 +444,8 @@ Natalie Dawsonともシンクロしてる。9日間忘れてた。
   };
 
   // ===== Initial Renders =====
-  initAffirmation(); // 追加
   renderCleanup();
-  renderCooking();   // 追加
+  renderCooking(); // 追加
   renderDiary();
   renderExpenses();
   renderStudy();
