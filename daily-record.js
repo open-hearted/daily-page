@@ -236,6 +236,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // ===== Cooking (掃除と同じロジック、ステップなし) =====
+  const cookingContainer = document.getElementById('cooking-tasks');
+  const addCookingBtn = document.getElementById('add-cooking');
+  let cookingData = JSON.parse(localStorage.getItem(getKey('cooking')) || '[]');
+  function renderCooking() {
+    renderEditableList(cookingData, cookingContainer, 'cooking', ['text']);
+  }
+  if (addCookingBtn) {
+    addCookingBtn.onclick = () => {
+      const text = prompt('料理内容を入力してください');
+      if (text) {
+        cookingData.push({ text, time: getJSTTime() });
+        localStorage.setItem(getKey('cooking'), JSON.stringify(cookingData));
+        renderCooking();
+      }
+    };
+  }
+
   // ===== Diary =====
   const diaryBtn = document.getElementById('diary-btn');
   // 入力欄を削除
@@ -293,12 +311,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   diaryBtn.onclick = () => {
-    // 5行分のprompt入力欄
-    const text = prompt('日記を記入（5行まで）', '').replace(/\r?\n/g, '\n');
-    if (text && text.trim()) {
-      diaryData.push({ text, time: getJSTTime() });
-      localStorage.setItem(getKey('diary'), JSON.stringify(diaryData));
-      renderDiary();
+    const input = prompt('日記を記入（5行まで）', '');
+    if (input !== null) {
+      const text = input.replace(/\r?\n/g, '\n').trim();
+      if (text) {
+        diaryData.push({ text, time: getJSTTime() });
+        localStorage.setItem(getKey('diary'), JSON.stringify(diaryData));
+        renderDiary();
+      }
     }
   };
 
@@ -396,9 +416,11 @@ document.addEventListener('DOMContentLoaded', () => {
       date: pageKey,
       laundry: laundryData,
       cleanup: cleanupData,
+      cooking: cookingData, // 追加
       diary: diaryData,
       expenses: expenseData,
-      study: studyData
+      study: studyData,
+      shower: showerData   // 追加
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -414,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ===== Renderer Map =====
   const renderers = {
     cleanup: renderCleanup,
+    cooking: renderCooking, // 追加
     diary: renderDiary,
     expenses: renderExpenses,
     study: renderStudy,
@@ -422,13 +445,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===== Initial Renders =====
   renderCleanup();
+  renderCooking(); // 追加
   renderDiary();
   renderExpenses();
   renderStudy();
   renderShower();
-
-// 料理カテゴリ（掃除と同じロジックで登録）
-const COOKING_STEPS = ['献立', '買い出し', '下準備', '調理', '配膳', '片付け'];
-// registerTaskButton(ボタンID, コンテナID, ステップ配列, ストレージキー/カテゴリ名)
-registerTaskButton('add-cooking', 'cooking-tasks', [], 'cooking');
 });
