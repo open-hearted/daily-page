@@ -1,11 +1,5 @@
-name: Daily Update
-
-on:
-  workflow_dispatch:
-  schedule:
-    # - cron: '0 0 * * *'
-    - cron: '0 15 * * *'  # ← JST 0:00 実行
-  
+# ワークフローを一時停止するため、トリガーを空にします（on: {}）。元に戻すにはこの行を編集してください。
+on: {}
 
 permissions:
   contents: write  # ← これがないと push できない！
